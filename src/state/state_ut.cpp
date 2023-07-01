@@ -3,9 +3,13 @@
 #include <catch2/catch_message.hpp>
 #include <random>
 
+namespace state_ut {
 const auto EPOCHS = 10000;
 std::mt19937_64 mrnd;
 const uint64_t mask64 = std::numeric_limits<uint64_t>::max();
+} // namespace state_ut
+
+using namespace state_ut;
 
 TEST_CASE("state constructors and getters", "[ctors], [getters]") {
   const auto bits =
