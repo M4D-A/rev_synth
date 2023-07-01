@@ -2,13 +2,12 @@
 #include <iostream>
 
 class state {
-private:
-  const uint64_t bits_num;
-  const uint64_t bits_mask;
-  uint64_t value;
+  const uint64_t bits_num_;
+  const uint64_t bits_mask_;
+  uint64_t value_;
 
 public:
-  state(uint64_t bits, uint64_t value = 0UL);
+  state(uint64_t bits_num, uint64_t value = 0UL);
 
   auto get_bits_num() const -> uint64_t;
   auto get_bits_mask() const -> uint64_t;
