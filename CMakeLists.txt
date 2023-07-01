@@ -22,7 +22,7 @@ include_directories("src")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # revsynth_lib #
-file(GLOB_RECURSE revsynth_src "src/*.cpp")
+file(GLOB_RECURSE revsynth_src "src/*/*.cpp")
 list(FILTER revsynth_src EXCLUDE REGEX ".*_ut\\.cpp$")
 add_library(revsynth_lib STATIC ${revsynth_src})
 
@@ -32,7 +32,5 @@ add_executable(revsynth_ut ${ut_src})
 target_link_libraries(revsynth_ut PRIVATE revsynth_lib)
 target_link_libraries(revsynth_ut PRIVATE Catch2::Catch2WithMain)
 
-# # STS.EXE #
-# file(GLOB main_src "src/main.cpp")
-# add_executable(sts ${main_src})
+# # STS.EXE # file(GLOB main_src "src/main.cpp") add_executable(sts ${main_src})
 # target_link_libraries(sts PRIVATE sts_lib)
