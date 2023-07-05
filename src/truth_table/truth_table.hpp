@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <iostream>
+#include <random>
 #include <vector>
 
 class truth_table {
@@ -20,6 +21,9 @@ public:
 
   auto set_data(std::vector<uint64_t> data) -> void;
   auto set_row(uint64_t index, uint64_t value) -> void;
+  auto inverse() -> void;
+  auto shuffle(std::mt19937_64 &mrnd) -> void;
+
   auto operator[](uint64_t index) -> uint64_t &;
   auto operator==(const truth_table &rhs) const -> bool = default;
 

@@ -39,7 +39,8 @@ TEST_CASE("truth_table value setters", "[truth_table], [setters]") {
   for (auto i = 0UL; i < (1UL << bits); i++) {
     if (i == index) {
       REQUIRE(tested.get_row(i) == new_value);
-    } else {
+    }
+    else {
       REQUIRE(tested.get_row(i) == i);
     }
   }
@@ -59,8 +60,25 @@ TEST_CASE("truth_table subscript operator", "[truth_table], [subscriptop]") {
   for (auto i = 0UL; i < (1UL << bits); i++) {
     if (i == index) {
       REQUIRE(tested[i] == new_value);
-    } else {
+    }
+    else {
       REQUIRE(tested[i] == i);
     }
   }
+}
+
+TEST_CASE("truth table inversion", "[truth_table], [inversion]") {
+  const auto bits =
+      static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, max_bits))));
+  auto forward = truth_table(bits);
+  forward.shuffle(mrnd);
+  auto backward = forward;
+  backward.inverse();
+  for (auto i = 0UL; i < forward.get_size(); i++) {
+    auto output = forward[i];
+    auto input = backward[output];
+    REQUIRE(i == input);
+  }
+  backward.inverse();
+  REQUIRE(backward == forward);
 }

@@ -1,6 +1,7 @@
 #include "truth_table.hpp"
 #include <cassert>
 #include <numeric>
+#include <random>
 #include <sys/types.h>
 
 const uint64_t mask64 = std::numeric_limits<uint64_t>::max();
@@ -25,11 +26,24 @@ auto truth_table::get_row(uint64_t index) const -> uint64_t {
 }
 
 auto truth_table::set_data(std::vector<uint64_t> new_data) -> void {
-  data_ = new_data;
+  data_ = std::move(new_data);
 }
 
 auto truth_table::set_row(uint64_t index, uint64_t value) -> void {
   data_[index] = value;
+}
+
+auto truth_table::shuffle(std::mt19937_64 &mrnd) -> void {
+  std::shuffle(data_.begin(), data_.end(), mrnd);
+}
+
+auto truth_table::inverse() -> void {
+  auto new_data = std::vector<uint64_t>(get_size());
+  for (auto input = 0UL; input < get_size(); input++) {
+    auto output = data_[input];
+    new_data[output] = input;
+  }
+  set_data(new_data);
 }
 
 auto truth_table::operator[](uint64_t index) -> uint64_t & {
