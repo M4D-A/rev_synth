@@ -41,10 +41,13 @@ TEST_CASE("gate constructors and getters", "[gate], [ctors], [getters]") {
   const auto target = controls.back();
   controls.pop_back();
   const auto tested = gate(bits, controls, target);
+  std::shuffle(controls.begin(), controls.end(), mrnd);
+  const auto tested_2 = gate(bits, controls, target);
   std::sort(controls.begin(), controls.end());
 
   REQUIRE(tested.get_size() == bits);
   REQUIRE(tested.get_controls() == controls);
+  REQUIRE(tested == tested_2);
 
   const auto control_mask = tested.get_control_mask();
   for (auto i = 0UL; i < 64UL; i++) {

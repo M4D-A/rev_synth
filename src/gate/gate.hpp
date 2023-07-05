@@ -26,5 +26,6 @@ public:
   auto apply(state &s) const -> void;
   auto apply(truth_table &tt, application_side = output) const -> void;
 
+  auto operator==(const gate &) const -> bool = default;
   auto print() const -> void;
 };
