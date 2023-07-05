@@ -13,6 +13,7 @@ class gate {
   const uint64_t target_mask_;
 
 public:
+  enum application_side { input, output };
   gate(uint64_t size, std::vector<uint64_t> controls, uint64_t target);
 
   auto get_size() const -> uint64_t;
@@ -22,6 +23,8 @@ public:
   auto get_target_mask() const -> uint64_t;
 
   auto apply(uint64_t row) const -> uint64_t;
-  auto apply(state s) const -> void;
-  auto apply(truth_table tt) const -> void;
+  auto apply(state &s) const -> void;
+  auto apply(truth_table &tt, application_side = output) const -> void;
+
+  auto print() const -> void;
 };

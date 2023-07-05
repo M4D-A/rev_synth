@@ -20,6 +20,8 @@ public:
 
   auto set_data(std::vector<uint64_t> data) -> void;
   auto set_row(uint64_t index, uint64_t value) -> void;
+  auto operator[](uint64_t index) -> uint64_t &;
+  auto operator==(const truth_table &rhs) const -> bool = default;
 
   auto print() const -> void;
 };

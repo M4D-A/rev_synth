@@ -31,3 +31,7 @@ auto truth_table::set_data(std::vector<uint64_t> new_data) -> void {
 auto truth_table::set_row(uint64_t index, uint64_t value) -> void {
   data_[index] = value;
 }
+
+auto truth_table::operator[](uint64_t index) -> uint64_t & {
+  return data_[index];
+}

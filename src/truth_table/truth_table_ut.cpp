@@ -44,3 +44,23 @@ TEST_CASE("truth_table value setters", "[truth_table], [setters]") {
     }
   }
 }
+
+TEST_CASE("truth_table subscript operator", "[truth_table], [subscriptop]") {
+  const auto bits =
+      static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, max_bits))));
+  const auto max_value_mask = mask64 >> (64 - bits);
+  auto tested = truth_table(bits);
+  const auto new_value = mrnd() & max_value_mask;
+  const auto index = mrnd() & max_value_mask;
+  tested[index] = new_value;
+
+  REQUIRE(tested.get_bits_num() == bits);
+  REQUIRE(tested.get_bits_mask() == max_value_mask);
+  for (auto i = 0UL; i < (1UL << bits); i++) {
+    if (i == index) {
+      REQUIRE(tested[i] == new_value);
+    } else {
+      REQUIRE(tested[i] == i);
+    }
+  }
+}
