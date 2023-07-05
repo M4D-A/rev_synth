@@ -41,6 +41,7 @@ TEST_CASE("gate constructors and getters", "[gate], [ctors], [getters]") {
   const auto target = controls.back();
   controls.pop_back();
   const auto tested = gate(bits, controls, target);
+  std::sort(controls.begin(), controls.end());
 
   REQUIRE(tested.get_size() == bits);
   REQUIRE(tested.get_controls() == controls);

@@ -1,8 +1,11 @@
 #include "gate.hpp"
 
 gate::gate(uint64_t size, std::vector<uint64_t> controls, uint64_t target)
-    : size_(size), controls_(controls), target_(target),
-      control_mask_([controls]() {
+    : size_(size), controls_([&controls]() {
+        std::sort(controls.begin(), controls.end());
+        return controls;
+      }()),
+      target_(target), control_mask_([controls]() {
         uint64_t mask = 0UL;
         for (auto control : controls) {
           mask |= 1 << control;
