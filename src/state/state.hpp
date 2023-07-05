@@ -14,10 +14,15 @@ public:
   auto get_value() const -> uint64_t;
   auto get_bit(uint64_t index) const -> uint64_t;
 
-  void set_value(uint64_t value);
-  void set_bit(uint64_t index, uint64_t bit_value);
-  void switch_bit(uint64_t index);
-  void negate();
+  auto set_value(uint64_t value) -> void;
+  auto set_bit(uint64_t index, uint64_t bit_value) -> void;
+  auto switch_bit(uint64_t index) -> void;
+  auto negate() -> void;
 
-  void print() const;
+  auto operator==(const state &rhs) const -> bool = default;
+  auto operator==(const uint64_t &rhs) const -> bool;
+
+  auto operator[](const uint64_t index) const -> uint64_t;
+
+  auto print() const -> void;
 };
