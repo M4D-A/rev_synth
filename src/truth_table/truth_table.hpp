@@ -23,6 +23,7 @@ public:
   auto set_row(uint64_t index, uint64_t value) -> void;
   auto inverse() -> void;
   auto shuffle(std::mt19937_64 &mrnd) -> void;
+  auto swap(uint64_t index_1, uint64_t index_2) -> void;
 
   auto operator[](uint64_t index) -> uint64_t &;
   auto operator==(const truth_table &rhs) const -> bool = default;

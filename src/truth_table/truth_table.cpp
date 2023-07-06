@@ -37,6 +37,10 @@ auto truth_table::shuffle(std::mt19937_64 &mrnd) -> void {
   std::shuffle(data_.begin(), data_.end(), mrnd);
 }
 
+auto truth_table::swap(uint64_t index_1, uint64_t index_2) -> void {
+  std::swap(data_[index_1], data_[index_2]);
+}
+
 auto truth_table::inverse() -> void {
   auto new_data = std::vector<uint64_t>(get_size());
   for (auto input = 0UL; input < get_size(); input++) {

@@ -55,7 +55,7 @@ auto gate::apply(truth_table &tt, application_side aps) const -> void {
       bool is_target_set = (index & target_mask_) == target_mask_;
       if (is_control_set && is_target_set) {
         auto next_index = index ^ target_mask_;
-        std::swap(tt[index], tt[next_index]);
+        tt.swap(index, next_index);
       }
     }
   }
