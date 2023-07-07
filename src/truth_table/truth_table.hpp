@@ -19,11 +19,11 @@ public:
   auto get_data() const -> std::vector<uint64_t>;
   auto get_row(uint64_t index) const -> uint64_t;
 
-  auto set_data(std::vector<uint64_t> data) -> void;
-  auto set_row(uint64_t index, uint64_t value) -> void;
-  auto inverse() -> void;
-  auto shuffle(std::mt19937_64 &mrnd) -> void;
-  auto swap(uint64_t index_1, uint64_t index_2) -> void;
+  auto set_data(std::vector<uint64_t> data) -> truth_table &;
+  auto set_row(uint64_t index, uint64_t value) -> truth_table &;
+  auto inverse() -> truth_table &;
+  auto shuffle(std::mt19937_64 &mrnd) -> truth_table &;
+  auto swap(uint64_t index_1, uint64_t index_2) -> truth_table &;
 
   auto operator[](uint64_t index) -> uint64_t &;
   auto operator[](uint64_t index) const -> uint64_t;

@@ -25,29 +25,34 @@ auto truth_table::get_row(uint64_t index) const -> uint64_t {
   return data_[index];
 }
 
-auto truth_table::set_data(std::vector<uint64_t> new_data) -> void {
+auto truth_table::set_data(std::vector<uint64_t> new_data) -> truth_table & {
   data_ = std::move(new_data);
+  return *this;
 }
 
-auto truth_table::set_row(uint64_t index, uint64_t value) -> void {
+auto truth_table::set_row(uint64_t index, uint64_t value) -> truth_table & {
   data_[index] = value;
+  return *this;
 }
 
-auto truth_table::shuffle(std::mt19937_64 &mrnd) -> void {
+auto truth_table::shuffle(std::mt19937_64 &mrnd) -> truth_table & {
   std::shuffle(data_.begin(), data_.end(), mrnd);
+  return *this;
 }
 
-auto truth_table::swap(uint64_t index_1, uint64_t index_2) -> void {
+auto truth_table::swap(uint64_t index_1, uint64_t index_2) -> truth_table & {
   std::swap(data_[index_1], data_[index_2]);
+  return *this;
 }
 
-auto truth_table::inverse() -> void {
+auto truth_table::inverse() -> truth_table & {
   auto new_data = std::vector<uint64_t>(get_size());
   for (auto input = 0UL; input < get_size(); input++) {
     auto output = data_[input];
     new_data[output] = input;
   }
   set_data(new_data);
+  return *this;
 }
 
 auto truth_table::operator[](uint64_t index) -> uint64_t & {

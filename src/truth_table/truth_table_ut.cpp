@@ -29,10 +29,10 @@ TEST_CASE("truth_table value setters", "[truth_table], [setters]") {
   const auto bits =
       static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, max_bits))));
   const auto max_value_mask = mask64 >> (64 - bits);
-  auto tested = truth_table(bits);
   const auto new_value = mrnd() & max_value_mask;
   const auto index = mrnd() & max_value_mask;
-  tested.set_row(index, new_value);
+
+  auto tested = truth_table(bits).set_row(index, new_value);
 
   REQUIRE(tested.get_bits_num() == bits);
   REQUIRE(tested.get_bits_mask() == max_value_mask);
@@ -50,9 +50,9 @@ TEST_CASE("truth_table subscript operator", "[truth_table], [subscriptop]") {
   const auto bits =
       static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, max_bits))));
   const auto max_value_mask = mask64 >> (64 - bits);
-  auto tested = truth_table(bits);
   const auto new_value = mrnd() & max_value_mask;
   const auto index = mrnd() & max_value_mask;
+  auto tested = truth_table(bits);
   tested[index] = new_value;
 
   REQUIRE(tested.get_bits_num() == bits);
@@ -70,8 +70,7 @@ TEST_CASE("truth_table subscript operator", "[truth_table], [subscriptop]") {
 TEST_CASE("truth table inversion", "[truth_table], [inversion]") {
   const auto bits =
       static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, max_bits))));
-  auto forward = truth_table(bits);
-  forward.shuffle(mrnd);
+  auto forward = truth_table(bits).shuffle(mrnd);
   auto backward = forward;
   backward.inverse();
   for (auto i = 0UL; i < forward.get_size(); i++) {
@@ -88,8 +87,7 @@ TEST_CASE("truth table addition", "[truth_table], [addition]") {
       static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, max_bits))));
 
   SECTION("adding inverses") {
-    auto forward = truth_table(bits);
-    forward.shuffle(mrnd);
+    auto forward = truth_table(bits).shuffle(mrnd);
     auto backward = forward;
     backward.inverse();
     auto sum_fb = forward + backward;
@@ -101,14 +99,10 @@ TEST_CASE("truth table addition", "[truth_table], [addition]") {
   }
 
   SECTION("sum inversion") {
-    auto tt_1 = truth_table(bits);
-    auto tt_2 = truth_table(bits);
+    auto tt_1 = truth_table(bits).shuffle(mrnd);
+    auto tt_2 = truth_table(bits).shuffle(mrnd);
 
-    tt_1.shuffle(mrnd);
-    tt_2.shuffle(mrnd);
-
-    auto tt_12 = tt_1 + tt_2;
-    tt_12.inverse();
+    auto tt_12 = (tt_1 + tt_2).inverse();
 
     tt_1.inverse();
     tt_2.inverse();
@@ -117,11 +111,8 @@ TEST_CASE("truth table addition", "[truth_table], [addition]") {
   }
 
   SECTION("random elements") {
-    auto tt_1 = truth_table(bits);
-    auto tt_2 = truth_table(bits);
-
-    tt_1.shuffle(mrnd);
-    tt_2.shuffle(mrnd);
+    auto tt_1 = truth_table(bits).shuffle(mrnd);
+    auto tt_2 = truth_table(bits).shuffle(mrnd);
 
     auto sum = tt_1 + tt_2;
     for (auto input = 0UL; input < sum.get_size(); input++) {
