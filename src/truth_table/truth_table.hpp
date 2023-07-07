@@ -26,7 +26,10 @@ public:
   auto swap(uint64_t index_1, uint64_t index_2) -> void;
 
   auto operator[](uint64_t index) -> uint64_t &;
+  auto operator[](uint64_t index) const -> uint64_t;
+
   auto operator==(const truth_table &rhs) const -> bool = default;
+  auto operator+(const truth_table &rhs) const -> truth_table;
 
   auto print() const -> void;
 };

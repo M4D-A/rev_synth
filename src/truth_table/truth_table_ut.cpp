@@ -82,3 +82,52 @@ TEST_CASE("truth table inversion", "[truth_table], [inversion]") {
   backward.inverse();
   REQUIRE(backward == forward);
 }
+
+TEST_CASE("truth table addition", "[truth_table], [addition]") {
+  const auto bits =
+      static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, max_bits))));
+
+  SECTION("adding inverses") {
+    auto forward = truth_table(bits);
+    forward.shuffle(mrnd);
+    auto backward = forward;
+    backward.inverse();
+    auto sum_fb = forward + backward;
+    auto sum_bf = backward + forward;
+    for (auto i = 0UL; i < sum_fb.get_size(); i++) {
+      REQUIRE(i == sum_fb[i]);
+      REQUIRE(i == sum_bf[i]);
+    }
+  }
+
+  SECTION("sum inversion") {
+    auto tt_1 = truth_table(bits);
+    auto tt_2 = truth_table(bits);
+
+    tt_1.shuffle(mrnd);
+    tt_2.shuffle(mrnd);
+
+    auto tt_12 = tt_1 + tt_2;
+    tt_12.inverse();
+
+    tt_1.inverse();
+    tt_2.inverse();
+    auto tt_21 = tt_2 + tt_1;
+    REQUIRE(tt_12 == tt_21);
+  }
+
+  SECTION("random elements") {
+    auto tt_1 = truth_table(bits);
+    auto tt_2 = truth_table(bits);
+
+    tt_1.shuffle(mrnd);
+    tt_2.shuffle(mrnd);
+
+    auto sum = tt_1 + tt_2;
+    for (auto input = 0UL; input < sum.get_size(); input++) {
+      auto sum_output = sum[input];
+      auto chained_output = tt_2[tt_1[input]];
+      REQUIRE(sum_output == chained_output);
+    }
+  }
+}

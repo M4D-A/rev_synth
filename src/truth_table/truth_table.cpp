@@ -53,3 +53,20 @@ auto truth_table::inverse() -> void {
 auto truth_table::operator[](uint64_t index) -> uint64_t & {
   return data_[index];
 }
+
+auto truth_table::operator[](uint64_t index) const -> uint64_t {
+  return data_[index];
+}
+
+auto truth_table::operator+(const truth_table &rhs) const -> truth_table {
+  assert(get_size() == rhs.get_size());
+  assert(get_bits_num() == rhs.get_bits_num());
+  auto result = *this;
+
+  for (auto input = 0UL; input < get_size(); input++) {
+    auto output = rhs[(*this)[input]];
+    result.set_row(input, output);
+  }
+
+  return result;
+}
