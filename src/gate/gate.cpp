@@ -42,21 +42,21 @@ auto gate::apply(state &s) const -> void {
   s.set_value(apply(s.get_value()));
 }
 
-auto gate::apply(truth_table &tt, application_side aps) const -> void {
+auto gate::apply_back(truth_table &tt) const -> void {
   assert(tt.get_bits_num() == get_size());
-  if (aps == output) {
-    for (auto index = 0UL; index < tt.get_size(); index++) {
-      tt.set_row(index, apply(tt.get_row(index)));
-    }
+  for (auto index = 0UL; index < tt.get_size(); index++) {
+    tt.set_row(index, apply(tt.get_row(index)));
   }
-  else if (aps == input) {
-    for (auto index = 0UL; index < tt.get_size(); index++) {
-      bool is_control_set = (index & control_mask_) == control_mask_;
-      bool is_target_set = (index & target_mask_) == target_mask_;
-      if (is_control_set && is_target_set) {
-        auto next_index = index ^ target_mask_;
-        tt.swap(index, next_index);
-      }
+}
+
+auto gate::apply_front(truth_table &tt) const -> void {
+  assert(tt.get_bits_num() == get_size());
+  for (auto index = 0UL; index < tt.get_size(); index++) {
+    bool is_control_set = (index & control_mask_) == control_mask_;
+    bool is_target_set = (index & target_mask_) == target_mask_;
+    if (is_control_set && is_target_set) {
+      auto next_index = index ^ target_mask_;
+      tt.swap(index, next_index);
     }
   }
 }

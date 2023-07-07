@@ -102,7 +102,7 @@ TEST_CASE("gate apply", "[gate], [apply]") {
 
   SECTION("truth table") {
     auto target_tt = truth_table(bits);
-    tested.apply(target_tt);
+    tested.apply_back(target_tt);
     for (auto input = 0UL; input < target_tt.get_size(); input++) {
       const auto output = target_tt[input];
       REQUIRE(output == tested.apply(input));
@@ -111,7 +111,7 @@ TEST_CASE("gate apply", "[gate], [apply]") {
 
   SECTION("truth table on input") {
     auto target_tt = truth_table(bits);
-    tested.apply(target_tt, gate::application_side::input);
+    tested.apply_front(target_tt);
     for (auto input = 0UL; input < target_tt.get_size(); input++) {
       const auto output = target_tt[input];
       REQUIRE(output == tested.apply(input));
@@ -140,17 +140,17 @@ TEST_CASE("complex gate apply", "[gate], [apply]") {
     auto tt_inp_out = truth_table(bits);
     auto tt_inp_inp = truth_table(bits);
 
-    tested_gates[0].apply(tt_out_out, gate::application_side::output);
-    tested_gates[1].apply(tt_out_out, gate::application_side::output);
+    tested_gates[0].apply_back(tt_out_out);
+    tested_gates[1].apply_back(tt_out_out);
 
-    tested_gates[1].apply(tt_out_inp, gate::application_side::output);
-    tested_gates[0].apply(tt_out_inp, gate::application_side::input);
+    tested_gates[1].apply_back(tt_out_inp);
+    tested_gates[0].apply_front(tt_out_inp);
 
-    tested_gates[0].apply(tt_inp_out, gate::application_side::input);
-    tested_gates[1].apply(tt_inp_out, gate::application_side::output);
+    tested_gates[0].apply_front(tt_inp_out);
+    tested_gates[1].apply_back(tt_inp_out);
 
-    tested_gates[1].apply(tt_inp_inp, gate::application_side::input);
-    tested_gates[0].apply(tt_inp_inp, gate::application_side::input);
+    tested_gates[1].apply_front(tt_inp_inp);
+    tested_gates[0].apply_front(tt_inp_inp);
 
     REQUIRE(tt_out_out == tt_out_inp);
     REQUIRE(tt_out_out == tt_inp_out);
@@ -176,11 +176,11 @@ TEST_CASE("complex gate apply", "[gate], [apply]") {
     auto tt_backward = truth_table(bits);
 
     for (auto gate : tested_gates) {
-      gate.apply(tt_forward, gate::application_side::output);
+      gate.apply_back(tt_forward);
     }
 
     for (auto gate : tested_gates | std::views::reverse) {
-      gate.apply(tt_backward, gate::application_side::input);
+      gate.apply_front(tt_backward);
     }
     REQUIRE(tt_forward == tt_backward);
   }
