@@ -54,9 +54,14 @@ TEST_CASE("state value setters", "[state], [setters]") {
       static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, 64))));
 
   const auto max_value_mask = mask64 >> (64 - bits);
-  const auto value = mrnd() & max_value_mask;
-  auto tested = state(bits, value);
+  const auto init_value = mrnd() & max_value_mask;
+  const auto chained_value = mrnd() & max_value_mask;
   const auto new_value = mrnd() & max_value_mask;
+  auto tested = state(bits, init_value).set_value(chained_value);
+
+  REQUIRE(tested.get_value() == chained_value);
+  REQUIRE(tested == chained_value);
+
   tested.set_value(new_value);
 
   REQUIRE(tested.get_bits_num() == bits);
@@ -71,10 +76,9 @@ TEST_CASE("state bit setters", "[state], [setters]") {
 
   const auto max_value_mask = mask64 >> (64 - bits);
   const auto value = mrnd() & max_value_mask;
-  auto tested = state(bits, value);
   const auto new_bit = mrnd() % 2;
   const auto new_bit_index = mrnd() % bits;
-  tested.set_bit(new_bit_index, new_bit);
+  auto tested = state(bits, value).set_bit(new_bit_index, new_bit);
 
   REQUIRE(tested.get_bits_num() == bits);
   REQUIRE(tested.get_bits_mask() == max_value_mask);
@@ -96,9 +100,8 @@ TEST_CASE("state bit switch", "[state], [modifiers]") {
 
   const auto max_value_mask = mask64 >> (64 - bits);
   const auto value = mrnd() & max_value_mask;
-  auto tested = state(bits, value);
   const auto new_bit_index = mrnd() % bits;
-  tested.switch_bit(new_bit_index);
+  auto tested = state(bits, value).switch_bit(new_bit_index);
 
   REQUIRE(tested.get_bits_num() == bits);
   REQUIRE(tested.get_bits_mask() == max_value_mask);
@@ -120,8 +123,7 @@ TEST_CASE("state negate", "[state], [modifiers]") {
 
   const auto max_value_mask = mask64 >> (64 - bits);
   const auto value = mrnd() & max_value_mask;
-  auto tested = state(bits, value);
-  tested.negate();
+  auto tested = state(bits, value).negate();
 
   REQUIRE(tested.get_bits_num() == bits);
   REQUIRE(tested.get_bits_mask() == max_value_mask);
