@@ -30,6 +30,7 @@ public:
 
   auto operator==(const truth_table &rhs) const -> bool = default;
   auto operator+(const truth_table &rhs) const -> truth_table;
+  auto operator+=(const truth_table &rhs) -> truth_table &;
 
   auto print() const -> void;
 };

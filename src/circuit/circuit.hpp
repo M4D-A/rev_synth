@@ -14,7 +14,7 @@ public:
 
   auto get_width() const -> uint64_t;
   auto get_gates_num() const -> uint64_t;
-  auto get_gates() const -> const std::deque<const gate> &;
+  auto get_gates() const -> const std::deque<gate> &;
   auto get_truth_table() const -> const truth_table &;
 
   auto apply(uint64_t row) const -> uint64_t;

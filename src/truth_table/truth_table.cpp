@@ -75,3 +75,13 @@ auto truth_table::operator+(const truth_table &rhs) const -> truth_table {
 
   return result;
 }
+
+auto truth_table::operator+=(const truth_table &rhs) -> truth_table & {
+  assert(get_size() == rhs.get_size());
+  assert(get_bits_num() == rhs.get_bits_num());
+  for (auto input = 0UL; input < get_size(); input++) {
+    auto output = rhs[(*this)[input]];
+    set_row(input, output);
+  }
+  return *this;
+}
