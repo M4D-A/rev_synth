@@ -19,7 +19,12 @@ auto circuit::apply(state &s) const -> void {
 
 auto circuit::apply_back(truth_table &tt) const -> void {
   assert(tt.get_bits_num() == width_);
-  tt += output_;
+  tt = tt + output_;
+}
+
+auto circuit::apply_front(truth_table &tt) const -> void {
+  assert(tt.get_bits_num() == width_);
+  tt = output_ + tt;
 }
 
 auto circuit::push_back(gate new_gate) -> void {

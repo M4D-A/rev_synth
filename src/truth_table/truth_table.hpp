@@ -5,8 +5,8 @@
 
 class truth_table {
 private:
-  const uint64_t bits_num_;
-  const uint64_t bits_mask_;
+  uint64_t bits_num_;
+  uint64_t bits_mask_;
   std::vector<uint64_t> data_;
 
 public:
