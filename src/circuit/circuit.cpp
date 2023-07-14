@@ -27,12 +27,41 @@ auto circuit::apply_front(truth_table &tt) const -> void {
   tt = output_ + tt;
 }
 
-auto circuit::push_back(gate new_gate) -> void {
+auto circuit::push_back(gate new_gate) -> circuit & {
+  assert(new_gate.get_size() == width_);
   gates_.push_back(new_gate);
   new_gate.apply_back(output_);
+  return *this;
 }
 
-auto circuit::push_front(gate new_gate) -> void {
+auto circuit::push_front(gate new_gate) -> circuit & {
+  assert(new_gate.get_size() == width_);
   gates_.push_front(new_gate);
   new_gate.apply_front(output_);
+  return *this;
+}
+
+auto circuit::push_back(const circuit &new_circuit) -> circuit & {
+  for (auto gate : new_circuit.get_gates()) {
+    push_back(gate);
+  }
+  return *this;
+}
+
+auto circuit::push_front(const circuit &new_circuit) -> circuit & {
+  for (auto gate : new_circuit.get_gates()) {
+    push_front(gate);
+  }
+  return *this;
+}
+
+auto circuit::operator[](uint64_t index) const -> gate { return gates_[index]; }
+
+auto circuit::operator+=(const circuit &rhs) -> circuit & {
+  push_back(rhs);
+  return *this;
+}
+
+auto circuit::operator+(const circuit &rhs) -> circuit & {
+  return circuit(width_).push_back(rhs);
 }

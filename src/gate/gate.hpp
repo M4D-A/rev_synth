@@ -6,14 +6,15 @@
 #include <vector>
 
 class gate {
-  const uint64_t size_;
-  const std::vector<uint64_t> controls_;
-  const uint64_t target_;
-  const uint64_t control_mask_;
-  const uint64_t target_mask_;
+  uint64_t size_;
+  std::vector<uint64_t> controls_;
+  uint64_t target_;
+  uint64_t control_mask_;
+  uint64_t target_mask_;
 
 public:
   gate(uint64_t size, std::vector<uint64_t> controls, uint64_t target);
+  gate(uint64_t size, std::mt19937_64 mrnd);
 
   auto get_size() const -> uint64_t;
   auto get_controls() const -> std::vector<uint64_t>;

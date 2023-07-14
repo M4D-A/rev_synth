@@ -1,4 +1,22 @@
 #include "gate.hpp"
+#include <random>
+
+std::vector<uint64_t> random_unique_vector(uint64_t vector_size,
+                                           uint64_t range_upper,
+                                           std::mt19937_64 mrnd) {
+
+  std::vector<uint64_t> numbers(range_upper);
+  std::iota(numbers.begin(), numbers.end(), 0);
+
+  std::shuffle(numbers.begin(), numbers.end(), mrnd);
+
+  std::vector<uint64_t> result(vector_size);
+  std::copy(numbers.begin(),
+            numbers.begin() + static_cast<ptrdiff_t>(vector_size),
+            result.begin()); // Copy the first k numbers
+
+  return result;
+}
 
 gate::gate(uint64_t size, std::vector<uint64_t> controls, uint64_t target)
     : size_(size), controls_([&controls]() {
@@ -16,6 +34,27 @@ gate::gate(uint64_t size, std::vector<uint64_t> controls, uint64_t target)
   assert(std::all_of(controls.begin(), controls.end(),
                      [size](auto x) { return x < size; }));
   assert(target < size);
+}
+
+gate::gate(uint64_t size, std::mt19937_64 mrnd) {
+  const auto controls_num = mrnd() % size + 1; // actual controls + target;
+  auto controls = random_unique_vector(controls_num, size, mrnd);
+  const auto target = controls.back();
+  controls.pop_back();
+
+  sort(controls.begin(), controls.end());
+
+  size_ = size;
+  controls_ = controls;
+  target_ = target;
+  control_mask_ = [controls]() {
+    uint64_t mask = 0UL;
+    for (auto control : controls) {
+      mask |= 1 << control;
+    }
+    return mask;
+  }();
+  target_mask_ = (1 << target);
 }
 
 auto gate::get_size() const -> uint64_t { return size_; }

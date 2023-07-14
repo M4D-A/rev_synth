@@ -70,11 +70,9 @@ TEST_CASE("gate apply", "[gate], [apply]") {
   const auto bits =
       static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, max_bits))));
 
-  const auto controls_num = mrnd() % bits + 1;
-  auto controls = random_unique_vector(controls_num, bits);
-  const auto target = controls.back();
-  controls.pop_back();
-  const auto tested = gate(bits, controls, target);
+  const auto tested = gate(bits, mrnd);
+  const auto controls = tested.get_controls();
+  const auto target = tested.get_target();
 
   SECTION("row") {
     const auto row = mrnd() & (mask64 >> (64 - bits));
@@ -128,11 +126,7 @@ TEST_CASE("complex gate apply", "[gate], [apply]") {
     std::vector<gate> tested_gates;
     tested_gates.reserve(2UL);
     for (auto i = 0UL; i < 2UL; i++) {
-      const auto controls_num = mrnd() % bits + 1;
-      auto controls = random_unique_vector(controls_num, bits);
-      const auto target = controls.back();
-      controls.pop_back();
-      tested_gates.emplace_back(bits, controls, target);
+      tested_gates.emplace_back(bits, mrnd);
     }
 
     auto tt_out_out = truth_table(bits);
@@ -165,11 +159,7 @@ TEST_CASE("complex gate apply", "[gate], [apply]") {
     std::vector<gate> tested_gates;
     tested_gates.reserve(gates_num);
     for (auto i = 0UL; i < gates_num; i++) {
-      const auto controls_num = mrnd() % bits + 1;
-      auto controls = random_unique_vector(controls_num, bits);
-      const auto target = controls.back();
-      controls.pop_back();
-      tested_gates.emplace_back(bits, controls, target);
+      tested_gates.emplace_back(bits, mrnd);
     }
 
     auto tt_forward = truth_table(bits);
