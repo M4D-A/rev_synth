@@ -7,23 +7,6 @@ namespace circuit_ut {
 const auto EPOCHS = 10000;
 const auto max_bits = 12;
 std::mt19937_64 mrnd;
-std::vector<uint64_t> random_unique_vector(uint64_t vector_size,
-                                           uint64_t range_upper) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-
-  std::vector<uint64_t> numbers(range_upper);
-  std::iota(numbers.begin(), numbers.end(), 0);
-
-  std::shuffle(numbers.begin(), numbers.end(), gen); // Shuffle the numbers
-
-  std::vector<uint64_t> result(vector_size);
-  std::copy(numbers.begin(),
-            numbers.begin() + static_cast<ptrdiff_t>(vector_size),
-            result.begin()); // Copy the first k numbers
-
-  return result;
-}
 } // namespace circuit_ut
 
 using namespace circuit_ut;
@@ -49,11 +32,7 @@ TEST_CASE("circuit extensions and applications", "[circuit], [push]") {
   auto tt = truth_table(bits);
 
   for (auto i = 0UL; i < gates_num; i++) {
-    const auto controls_num = mrnd() % bits + 1;
-    auto controls = random_unique_vector(controls_num, bits);
-    const auto target = controls.back();
-    controls.pop_back();
-    auto random_gate = gate(bits, controls, target);
+    auto random_gate = gate(bits, mrnd);
 
     random_gate.apply_back(tt);
     tested.push_back(random_gate);
@@ -63,15 +42,11 @@ TEST_CASE("circuit extensions and applications", "[circuit], [push]") {
   REQUIRE(tested.get_truth_table() == tt);
 
   for (auto i = 0UL; i < gates_num; i++) {
-    const auto controls_num = mrnd() % bits + 1;
-    auto controls = random_unique_vector(controls_num, bits);
-    const auto target = controls.back();
-    controls.pop_back();
-    auto random_gate = gate(bits, controls, target);
-
+    auto random_gate = gate(bits, mrnd);
     random_gate.apply_front(tt);
     tested.push_front(random_gate);
   }
+
   REQUIRE(tested.get_gates_num() == gates_num * 2);
   REQUIRE(tested.get_width() == bits);
   REQUIRE(tested.get_truth_table() == tt);
