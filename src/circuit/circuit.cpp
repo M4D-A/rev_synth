@@ -2,6 +2,13 @@
 
 circuit::circuit(uint64_t width) : output_(truth_table(width)), width_(width){};
 
+circuit::circuit(uint64_t width, uint64_t gates_num, std::mt19937_64 mrnd)
+    : output_(truth_table(width)), width_(width) {
+  for (auto i = 0UL; i < gates_num; i++) {
+    push_back(gate(width_, mrnd));
+  }
+}
+
 auto circuit::get_width() const -> uint64_t { return width_; }
 
 auto circuit::get_gates_num() const -> uint64_t { return gates_.size(); }
@@ -57,11 +64,16 @@ auto circuit::push_front(const circuit &new_circuit) -> circuit & {
 
 auto circuit::operator[](uint64_t index) const -> gate { return gates_[index]; }
 
-auto circuit::operator+=(const circuit &rhs) -> circuit & {
+template <typename T> auto circuit::operator+=(const T &rhs) -> circuit & {
   push_back(rhs);
   return *this;
 }
+template auto circuit::operator+=(const gate &rhs) -> circuit &;
+template auto circuit::operator+=(const circuit &rhs) -> circuit &;
 
-auto circuit::operator+(const circuit &rhs) -> circuit & {
-  return circuit(width_).push_back(rhs);
+template <typename T> auto operator+(circuit lhs, const T &rhs) -> circuit {
+  lhs += rhs;
+  return lhs;
 }
+template auto operator+(circuit lhs, const gate &rhs) -> circuit;
+template auto operator+(circuit lhs, const circuit &rhs) -> circuit;

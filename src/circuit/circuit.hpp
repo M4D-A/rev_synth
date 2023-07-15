@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstdint>
 #include <deque>
+#include <random>
 
 class circuit {
   std::deque<gate> gates_;
@@ -10,7 +11,8 @@ class circuit {
   uint64_t width_;
 
 public:
-  circuit(uint64_t width_);
+  circuit(uint64_t width);
+  circuit(uint64_t width, uint64_t gates_num, std::mt19937_64);
 
   auto get_width() const -> uint64_t;
   auto get_gates_num() const -> uint64_t;
@@ -30,6 +32,7 @@ public:
   auto operator==(const circuit &rhs) const -> bool = default;
   auto operator[](uint64_t index) const -> gate;
 
-  auto operator+=(const circuit &rhs) -> circuit &;
-  auto operator+(const circuit &rhs) -> circuit &;
+  template <typename T> auto operator+=(const T &rhs) -> circuit &;
+  template <typename T>
+  friend auto operator+(circuit lhs, const T &rhs) -> circuit;
 };
