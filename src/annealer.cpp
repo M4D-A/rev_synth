@@ -26,3 +26,5 @@ std::vector<uint64_t> random_unique_vector(uint64_t vector_size,
 
   return result;
 }
+
+// circuit anneal(const uint64_t size, const std::vector<uint8_t> &target_tt) {}
