@@ -58,6 +58,21 @@ void circuit::push_front(uint64_t target_id,
   push_front(target_mask, control_mask);
 }
 
+void circuit::pop_front() {
+  auto target_mask = target_masks_.back();
+  auto control_mask = control_masks_.back();
+  target_masks_.pop_back();
+  control_masks_.pop_back();
+
+  for (auto index = 0UL; index < truth_table_.size(); index++) {
+    bool is_control_set = (index & control_mask) == control_mask;
+    bool is_target_set = (index & target_mask) == target_mask;
+    if (is_control_set && is_target_set) {
+      auto next_index = index ^ target_mask;
+      std::swap(truth_table_[index], truth_table_[next_index]);
+    }
+  }
+}
 void circuit::print() {
   for (uint64_t i = 0UL; i < target_masks_.size(); i++) {
     for (uint64_t s = 0; s < size_; s++) {

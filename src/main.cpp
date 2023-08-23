@@ -3,10 +3,7 @@
 #include <random>
 
 int main() {
-  circuit c(4);
-  c.push_back(3, {0, 1});
-  c.push_back(2, {0, 1, 3});
-  c.push_front(3, {0, 1});
-  c.push_front(2, {0, 1, 3});
+  std::vector<uint8_t> tt = {2, 1, 3, 7, 5, 0, 4, 6};
+  circuit c = anneal(3, tt, 2137);
   c.print();
 }
