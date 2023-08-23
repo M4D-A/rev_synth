@@ -18,12 +18,10 @@ void circuit::push_back(uint8_t target_mask, uint8_t control_mask) {
   }
 }
 
-void circuit::push_back(uint64_t target_id, std::vector<uint64_t> control_ids) {
+void circuit::push_back(uint64_t target_id,
+                        const std::vector<uint64_t> &control_ids) {
   uint8_t target_mask = static_cast<uint8_t>(1UL << target_id);
-  uint8_t control_mask = 0UL;
-  for (auto control : control_ids) {
-    control_mask |= static_cast<uint8_t>(1UL << control);
-  }
+  uint8_t control_mask = ids_to_mask(control_ids);
   push_back(target_mask, control_mask);
 }
 
@@ -54,12 +52,9 @@ void circuit::push_front(uint8_t target_mask, uint8_t control_mask) {
 }
 
 void circuit::push_front(uint64_t target_id,
-                         std::vector<uint64_t> control_ids) {
+                         const std::vector<uint64_t> &control_ids) {
   uint8_t target_mask = static_cast<uint8_t>(1UL << target_id);
-  uint8_t control_mask = 0UL;
-  for (auto control : control_ids) {
-    control_mask |= static_cast<uint8_t>(1UL << control);
-  }
+  uint8_t control_mask = ids_to_mask(control_ids);
   push_front(target_mask, control_mask);
 }
 
@@ -87,4 +82,12 @@ void circuit::print() {
     }
     std::cout << std::endl;
   }
+}
+
+uint8_t circuit::ids_to_mask(const std::vector<uint64_t> &ids) {
+  uint8_t mask = 0UL;
+  for (auto id : ids) {
+    mask |= static_cast<uint8_t>(1UL << id);
+  }
+  return mask;
 }
