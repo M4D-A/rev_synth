@@ -3,7 +3,8 @@
 #include <random>
 
 int main() {
-  std::vector<uint8_t> tt = {2, 1, 3, 7, 5, 0, 4, 6};
-  circuit c = anneal(3, tt, 2137);
+  std::vector<uint8_t> tt = {0x0E, 0x0D, 0x0B, 0x00, 0x02, 0x01, 0x04, 0x0F,
+                             0x07, 0x0A, 0x08, 0x05, 0x09, 0x0C, 0x03, 0x06};
+  circuit c = anneal(4, tt, 21371);
   c.print();
 }
