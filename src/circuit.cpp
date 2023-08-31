@@ -1,5 +1,6 @@
 #include "circuit.hpp"
 #include <algorithm>
+#include <bit>
 #include <iterator>
 
 std::vector<uint64_t> random_unique_vector(uint64_t vector_size,
@@ -131,16 +132,27 @@ void circuit::print() {
   }
 }
 
-uint64_t circuit::distance(const std::vector<uint8_t> &rhs) {
+// uint64_t circuit::distance(const std::vector<uint8_t> &rhs) {
+//   auto lhs = truth_table_;
+//   uint64_t size = lhs.size();
+//   uint64_t matchings = 0;
+//   for (uint64_t i = 0; i < size; i++) {
+//     if (lhs[i] == rhs[i]) {
+//       matchings++;
+//     }
+//   }
+//   return size - matchings;
+// }
+
+int64_t circuit::distance(const std::vector<uint8_t> &rhs) {
   auto lhs = truth_table_;
   uint64_t size = lhs.size();
-  uint64_t matchings = 0;
+  int64_t distance = 0;
   for (uint64_t i = 0; i < size; i++) {
-    if (lhs[i] == rhs[i]) {
-      matchings++;
-    }
+    uint8_t diff = lhs[i] ^ rhs[i];
+    distance += std::popcount(diff);
   }
-  return size - matchings;
+  return distance;
 }
 
 uint8_t circuit::ids_to_mask(const std::vector<uint64_t> &ids) {

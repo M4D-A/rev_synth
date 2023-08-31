@@ -22,7 +22,7 @@ struct circuit {
   void push_front_random(std::mt19937_64 &mrnd);
   void pop_front();
   void print();
-  uint64_t distance(const std::vector<uint8_t> &rhs);
+  int64_t distance(const std::vector<uint8_t> &rhs);
 
 private:
   uint8_t ids_to_mask(const std::vector<uint64_t> &ids);

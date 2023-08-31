@@ -13,10 +13,10 @@ circuit anneal(const uint64_t size, const std::vector<uint8_t> &target_tt,
   std::mt19937_64 mrnd(seed);
 
   const auto INIT_TEMP = 4.0;
-  const auto MIN_TEMP = 0.1;
+  const auto MIN_TEMP = 0.01;
   const auto TEMP_RATE = 0.99;
-  const auto ROUNDS = 1000000UL;
-  const auto TARGET_SIZE = 20;
+  const auto ROUNDS = 100000UL;
+  const auto TARGET_SIZE = 16;
 
   double current_temp = INIT_TEMP;
   while (current_temp >= MIN_TEMP) {
