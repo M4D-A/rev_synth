@@ -85,3 +85,9 @@ auto truth_table::operator+=(const truth_table &rhs) -> truth_table & {
   }
   return *this;
 }
+
+auto truth_table::print() const -> void {
+  for (auto i = 0UL; i < get_size(); i++) {
+    state(get_bits_num(), (*this)[i]).print();
+  }
+}

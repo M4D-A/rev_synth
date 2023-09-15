@@ -35,4 +35,6 @@ public:
   template <typename T> auto operator+=(const T &rhs) -> circuit &;
   template <typename T>
   friend auto operator+(circuit lhs, const T &rhs) -> circuit;
+
+  auto print() -> void;
 };

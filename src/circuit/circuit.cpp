@@ -77,3 +77,9 @@ template <typename T> auto operator+(circuit lhs, const T &rhs) -> circuit {
 }
 template auto operator+(circuit lhs, const gate &rhs) -> circuit;
 template auto operator+(circuit lhs, const circuit &rhs) -> circuit;
+
+auto circuit::print() -> void {
+  for (auto i = 0UL; i < get_gates_num(); i++) {
+    (*this)[i].print();
+  }
+}

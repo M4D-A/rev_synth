@@ -1,3 +1,5 @@
+#pragma once
+#include "state/state.hpp"
 #include <cstdint>
 #include <iostream>
 #include <random>

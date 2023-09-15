@@ -107,7 +107,7 @@ auto gate::print() const -> void {
   for (auto c : controls_) {
     std::cout << c << ", ";
   }
-  std::cout << std::endl;
   std::cout << "T mask:   " << target_mask_ << std::endl;
   std::cout << "C mask:   " << control_mask_ << std::endl;
+  std::cout << std::endl;
 }
