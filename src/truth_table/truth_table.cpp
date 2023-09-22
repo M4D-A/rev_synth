@@ -13,17 +13,15 @@ truth_table::truth_table(uint64_t bits_num)
   std::iota(data_.begin(), data_.end(), 0);
 }
 
-auto truth_table::get_bits_num() const -> uint64_t { return bits_num_; }
+auto truth_table::bits_num() const -> uint64_t { return bits_num_; }
 
-auto truth_table::get_size() const -> uint64_t { return data_.size(); }
+auto truth_table::size() const -> uint64_t { return data_.size(); }
 
-auto truth_table::get_bits_mask() const -> uint64_t { return bits_mask_; }
+auto truth_table::bits_mask() const -> uint64_t { return bits_mask_; }
 
-auto truth_table::get_data() const -> std::vector<uint64_t> { return data_; }
+auto truth_table::data() const -> std::vector<uint64_t> { return data_; }
 
-auto truth_table::get_row(uint64_t index) const -> uint64_t {
-  return data_[index];
-}
+auto truth_table::row(uint64_t index) const -> uint64_t { return data_[index]; }
 
 auto truth_table::set_data(std::vector<uint64_t> new_data) -> truth_table & {
   data_ = std::move(new_data);
@@ -46,8 +44,8 @@ auto truth_table::swap(uint64_t index_1, uint64_t index_2) -> truth_table & {
 }
 
 auto truth_table::inverse() -> truth_table & {
-  auto new_data = std::vector<uint64_t>(get_size());
-  for (auto input = 0UL; input < get_size(); input++) {
+  auto new_data = std::vector<uint64_t>(size());
+  for (auto input = 0UL; input < size(); input++) {
     auto output = data_[input];
     new_data[output] = input;
   }
@@ -64,11 +62,11 @@ auto truth_table::operator[](uint64_t index) const -> uint64_t {
 }
 
 auto truth_table::operator+(const truth_table &rhs) const -> truth_table {
-  assert(get_size() == rhs.get_size());
-  assert(get_bits_num() == rhs.get_bits_num());
+  assert(size() == rhs.size());
+  assert(bits_num() == rhs.bits_num());
   auto result = *this;
 
-  for (auto input = 0UL; input < get_size(); input++) {
+  for (auto input = 0UL; input < size(); input++) {
     auto output = rhs[(*this)[input]];
     result.set_row(input, output);
   }
@@ -77,9 +75,9 @@ auto truth_table::operator+(const truth_table &rhs) const -> truth_table {
 }
 
 auto truth_table::operator+=(const truth_table &rhs) -> truth_table & {
-  assert(get_size() == rhs.get_size());
-  assert(get_bits_num() == rhs.get_bits_num());
-  for (auto input = 0UL; input < get_size(); input++) {
+  assert(size() == rhs.size());
+  assert(bits_num() == rhs.bits_num());
+  for (auto input = 0UL; input < size(); input++) {
     auto output = rhs[(*this)[input]];
     set_row(input, output);
   }
@@ -87,7 +85,7 @@ auto truth_table::operator+=(const truth_table &rhs) -> truth_table & {
 }
 
 auto truth_table::print() const -> void {
-  for (auto i = 0UL; i < get_size(); i++) {
-    state(get_bits_num(), (*this)[i]).print();
+  for (auto i = 0UL; i < size(); i++) {
+    state(bits_num(), (*this)[i]).print();
   }
 }

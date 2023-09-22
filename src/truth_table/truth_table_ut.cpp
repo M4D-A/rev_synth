@@ -18,10 +18,10 @@ TEST_CASE("truth_table constructors and getters",
       static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, max_bits))));
 
   auto tested = truth_table(bits);
-  REQUIRE(tested.get_bits_num() == bits);
-  REQUIRE(tested.get_bits_mask() == mask64 >> (64 - bits));
+  REQUIRE(tested.bits_num() == bits);
+  REQUIRE(tested.bits_mask() == mask64 >> (64 - bits));
   for (auto i = 0UL; i < (1UL << bits); i++) {
-    REQUIRE(tested.get_row(i) == i);
+    REQUIRE(tested.row(i) == i);
   }
 }
 
@@ -34,14 +34,14 @@ TEST_CASE("truth_table value setters", "[truth_table], [setters]") {
 
   auto tested = truth_table(bits).set_row(index, new_value);
 
-  REQUIRE(tested.get_bits_num() == bits);
-  REQUIRE(tested.get_bits_mask() == max_value_mask);
+  REQUIRE(tested.bits_num() == bits);
+  REQUIRE(tested.bits_mask() == max_value_mask);
   for (auto i = 0UL; i < (1UL << bits); i++) {
     if (i == index) {
-      REQUIRE(tested.get_row(i) == new_value);
+      REQUIRE(tested.row(i) == new_value);
     }
     else {
-      REQUIRE(tested.get_row(i) == i);
+      REQUIRE(tested.row(i) == i);
     }
   }
 }
@@ -55,8 +55,8 @@ TEST_CASE("truth_table subscript operator", "[truth_table], [subscriptop]") {
   auto tested = truth_table(bits);
   tested[index] = new_value;
 
-  REQUIRE(tested.get_bits_num() == bits);
-  REQUIRE(tested.get_bits_mask() == max_value_mask);
+  REQUIRE(tested.bits_num() == bits);
+  REQUIRE(tested.bits_mask() == max_value_mask);
   for (auto i = 0UL; i < (1UL << bits); i++) {
     if (i == index) {
       REQUIRE(tested[i] == new_value);
@@ -73,7 +73,7 @@ TEST_CASE("truth table inversion", "[truth_table], [inversion]") {
   auto forward = truth_table(bits).shuffle(mrnd);
   auto backward = forward;
   backward.inverse();
-  for (auto i = 0UL; i < forward.get_size(); i++) {
+  for (auto i = 0UL; i < forward.size(); i++) {
     auto output = forward[i];
     auto input = backward[output];
     REQUIRE(i == input);
@@ -92,7 +92,7 @@ TEST_CASE("truth table addition", "[truth_table], [addition]") {
     backward.inverse();
     auto sum_fb = forward + backward;
     auto sum_bf = backward + forward;
-    for (auto i = 0UL; i < sum_fb.get_size(); i++) {
+    for (auto i = 0UL; i < sum_fb.size(); i++) {
       REQUIRE(i == sum_fb[i]);
       REQUIRE(i == sum_bf[i]);
     }
@@ -115,7 +115,7 @@ TEST_CASE("truth table addition", "[truth_table], [addition]") {
     auto tt_2 = truth_table(bits).shuffle(mrnd);
 
     auto sum = tt_1 + tt_2;
-    for (auto input = 0UL; input < sum.get_size(); input++) {
+    for (auto input = 0UL; input < sum.size(); input++) {
       auto sum_output = sum[input];
       auto chained_output = tt_2[tt_1[input]];
       REQUIRE(sum_output == chained_output);

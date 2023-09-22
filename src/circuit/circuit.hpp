@@ -7,17 +7,17 @@
 
 class circuit {
   std::deque<gate> gates_;
-  truth_table output_;
-  uint64_t width_;
+  truth_table output_tt_;
+  uint64_t bits_num_;
 
 public:
-  circuit(uint64_t width);
-  circuit(uint64_t width, uint64_t gates_num, std::mt19937_64);
+  circuit(uint64_t bits_num);
+  circuit(uint64_t bits_num, uint64_t gates_num, std::mt19937_64);
 
-  auto get_width() const -> uint64_t;
-  auto get_gates_num() const -> uint64_t;
-  auto get_gates() const -> const std::deque<gate> &;
-  auto get_truth_table() const -> const truth_table &;
+  auto bits_num() const -> uint64_t;
+  auto gates_num() const -> uint64_t;
+  auto gates() const -> const std::deque<gate> &;
+  auto output_tt() const -> const truth_table &;
 
   auto apply(uint64_t row) const -> uint64_t;
   auto apply(state &s) const -> void;

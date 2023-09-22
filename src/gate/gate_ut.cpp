@@ -45,11 +45,11 @@ TEST_CASE("gate constructors and getters", "[gate], [ctors], [getters]") {
   const auto tested_2 = gate(bits, controls, target);
   std::sort(controls.begin(), controls.end());
 
-  REQUIRE(tested.get_size() == bits);
-  REQUIRE(tested.get_controls() == controls);
+  REQUIRE(tested.bits_num() == bits);
+  REQUIRE(tested.controls() == controls);
   REQUIRE(tested == tested_2);
 
-  const auto control_mask = tested.get_control_mask();
+  const auto control_mask = tested.control_mask();
   for (auto i = 0UL; i < 64UL; i++) {
     const auto is_control_in_vector =
         std::find(controls.begin(), controls.end(), i) != controls.end();
@@ -58,7 +58,7 @@ TEST_CASE("gate constructors and getters", "[gate], [ctors], [getters]") {
     REQUIRE(is_control_bit_set == is_control_in_vector);
   }
 
-  const auto target_mask = tested.get_target_mask();
+  const auto target_mask = tested.target_mask();
   for (auto i = 0UL; i < 64UL; i++) {
     const auto is_target_bit_set = static_cast<bool>((target_mask >> i) & 1UL);
     const auto is_target_bit = i == target;
@@ -71,8 +71,8 @@ TEST_CASE("gate apply", "[gate], [apply]") {
       static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, max_bits))));
 
   const auto tested = gate(bits, mrnd);
-  const auto controls = tested.get_controls();
-  const auto target = tested.get_target();
+  const auto controls = tested.controls();
+  const auto target = tested.target();
 
   SECTION("row") {
     const auto row = mrnd() & (mask64 >> (64 - bits));
@@ -94,14 +94,14 @@ TEST_CASE("gate apply", "[gate], [apply]") {
     const auto value = mrnd() & (mask64 >> (64 - bits));
     auto target_state = state(bits, value);
     tested.apply(target_state);
-    const auto new_value = target_state.get_value();
+    const auto new_value = target_state.value();
     REQUIRE(new_value == tested.apply(value));
   }
 
   SECTION("truth table") {
     auto target_tt = truth_table(bits);
     tested.apply_back(target_tt);
-    for (auto input = 0UL; input < target_tt.get_size(); input++) {
+    for (auto input = 0UL; input < target_tt.size(); input++) {
       const auto output = target_tt[input];
       REQUIRE(output == tested.apply(input));
     }
@@ -110,7 +110,7 @@ TEST_CASE("gate apply", "[gate], [apply]") {
   SECTION("truth table on input") {
     auto target_tt = truth_table(bits);
     tested.apply_front(target_tt);
-    for (auto input = 0UL; input < target_tt.get_size(); input++) {
+    for (auto input = 0UL; input < target_tt.size(); input++) {
       const auto output = target_tt[input];
       REQUIRE(output == tested.apply(input));
     }

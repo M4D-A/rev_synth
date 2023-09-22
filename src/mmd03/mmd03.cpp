@@ -1,6 +1,6 @@
 #include "mmd03.hpp"
 auto mmd03::synthesize(truth_table target_tt) -> circuit {
-  auto width = target_tt.get_bits_num();
+  auto width = target_tt.bits_num();
   auto retval = circuit(width);
 
   // f(0) = 0

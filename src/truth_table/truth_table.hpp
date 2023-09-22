@@ -12,14 +12,14 @@ private:
   std::vector<uint64_t> data_;
 
 public:
-  truth_table(uint64_t bits);
+  truth_table(uint64_t bits_num);
 
-  auto get_bits_num() const -> uint64_t;
-  auto get_size() const -> uint64_t;
+  auto bits_num() const -> uint64_t;
+  auto size() const -> uint64_t;
 
-  auto get_bits_mask() const -> uint64_t;
-  auto get_data() const -> std::vector<uint64_t>;
-  auto get_row(uint64_t index) const -> uint64_t;
+  auto bits_mask() const -> uint64_t;
+  auto data() const -> std::vector<uint64_t>;
+  auto row(uint64_t index) const -> uint64_t;
 
   auto set_data(std::vector<uint64_t> data) -> truth_table &;
   auto set_row(uint64_t index, uint64_t value) -> truth_table &;

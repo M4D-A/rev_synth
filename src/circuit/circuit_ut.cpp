@@ -17,10 +17,10 @@ TEST_CASE("circuit constructors and getters", "[circuit], [ctors], [getters]") {
       static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, max_bits))));
 
   auto tested = circuit(bits);
-  REQUIRE(tested.get_gates_num() == 0UL);
-  REQUIRE(tested.get_gates() == std::deque<gate>());
-  REQUIRE(tested.get_width() == bits);
-  REQUIRE(tested.get_truth_table() == truth_table(bits));
+  REQUIRE(tested.gates_num() == 0UL);
+  REQUIRE(tested.gates() == std::deque<gate>());
+  REQUIRE(tested.bits_num() == bits);
+  REQUIRE(tested.output_tt() == truth_table(bits));
 }
 
 TEST_CASE("circuit extensions and applications", "[circuit], [push]") {
@@ -38,9 +38,9 @@ TEST_CASE("circuit extensions and applications", "[circuit], [push]") {
     random_gate.apply_back(tt);
     tested.push_back(random_gate);
   }
-  REQUIRE(tested.get_gates_num() == gates_num);
-  REQUIRE(tested.get_width() == bits);
-  REQUIRE(tested.get_truth_table() == tt);
+  REQUIRE(tested.gates_num() == gates_num);
+  REQUIRE(tested.bits_num() == bits);
+  REQUIRE(tested.output_tt() == tt);
 
   for (auto i = 0UL; i < gates_num; i++) {
     auto random_gate = gate(bits, mrnd);
@@ -48,19 +48,19 @@ TEST_CASE("circuit extensions and applications", "[circuit], [push]") {
     tested.push_front(random_gate);
   }
 
-  REQUIRE(tested.get_gates_num() == gates_num * 2);
-  REQUIRE(tested.get_width() == bits);
-  REQUIRE(tested.get_truth_table() == tt);
+  REQUIRE(tested.gates_num() == gates_num * 2);
+  REQUIRE(tested.bits_num() == bits);
+  REQUIRE(tested.output_tt() == tt);
 
   auto random_tt_f = truth_table(bits).shuffle(mrnd);
   auto random_tt_f_copy = random_tt_f;
   tested.apply_front(random_tt_f);
-  REQUIRE(random_tt_f == tested.get_truth_table() + random_tt_f_copy);
+  REQUIRE(random_tt_f == tested.output_tt() + random_tt_f_copy);
 
   auto random_tt_b = truth_table(bits).shuffle(mrnd);
   auto random_tt_b_copy = random_tt_b;
   tested.apply_back(random_tt_b);
-  REQUIRE(random_tt_b == random_tt_b_copy + tested.get_truth_table());
+  REQUIRE(random_tt_b == random_tt_b_copy + tested.output_tt());
 }
 
 TEST_CASE("circuit operators", "[circuit], [operators]") {
@@ -78,9 +78,9 @@ TEST_CASE("circuit operators", "[circuit], [operators]") {
       random_gate.apply_back(tt);
       tested += random_gate;
     }
-    REQUIRE(tested.get_gates_num() == gates_num);
-    REQUIRE(tested.get_width() == bits);
-    REQUIRE(tested.get_truth_table() == tt);
+    REQUIRE(tested.gates_num() == gates_num);
+    REQUIRE(tested.bits_num() == bits);
+    REQUIRE(tested.output_tt() == tt);
   }
 
   SECTION("+ operator") {

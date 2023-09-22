@@ -11,13 +11,13 @@ state::state(uint64_t bits_num, uint64_t value)
   set_value(value);
 }
 
-auto state::get_bits_num() const -> uint64_t { return bits_num_; }
+auto state::bits_num() const -> uint64_t { return bits_num_; }
 
-auto state::get_bits_mask() const -> uint64_t { return bits_mask_; }
+auto state::bits_mask() const -> uint64_t { return bits_mask_; }
 
-auto state::get_value() const -> uint64_t { return value_; }
+auto state::value() const -> uint64_t { return value_; }
 
-auto state::get_bit(uint64_t index) const -> uint64_t {
+auto state::bit_value(uint64_t index) const -> uint64_t {
   return (value_ >> index) & 1UL;
 }
 
@@ -53,7 +53,7 @@ auto state::operator==(const uint64_t &rhs) const -> bool {
 }
 
 auto state::operator[](const uint64_t index) const -> uint64_t {
-  return get_bit(index);
+  return bit_value(index);
 }
 
 auto state::print() const -> void {

@@ -19,7 +19,7 @@ std::vector<uint64_t> random_unique_vector(uint64_t vector_size,
 }
 
 gate::gate(uint64_t size, std::vector<uint64_t> controls, uint64_t target)
-    : size_(size), controls_([&controls]() {
+    : bits_num_(size), controls_([&controls]() {
         std::sort(controls.begin(), controls.end());
         return controls;
       }()),
@@ -44,7 +44,7 @@ gate::gate(uint64_t size, std::mt19937_64 mrnd) {
 
   sort(controls.begin(), controls.end());
 
-  size_ = size;
+  bits_num_ = size;
   controls_ = controls;
   target_ = target;
   control_mask_ = [controls]() {
@@ -57,15 +57,15 @@ gate::gate(uint64_t size, std::mt19937_64 mrnd) {
   target_mask_ = (1 << target);
 }
 
-auto gate::get_size() const -> uint64_t { return size_; }
+auto gate::bits_num() const -> uint64_t { return bits_num_; }
 
-auto gate::get_controls() const -> std::vector<uint64_t> { return controls_; }
+auto gate::controls() const -> std::vector<uint64_t> { return controls_; }
 
-auto gate::get_target() const -> uint64_t { return target_; }
+auto gate::target() const -> uint64_t { return target_; }
 
-auto gate::get_control_mask() const -> uint64_t { return control_mask_; }
+auto gate::control_mask() const -> uint64_t { return control_mask_; }
 
-auto gate::get_target_mask() const -> uint64_t { return target_mask_; }
+auto gate::target_mask() const -> uint64_t { return target_mask_; }
 
 auto gate::apply(uint64_t row) const -> uint64_t {
   if ((row & control_mask_) == control_mask_) {
@@ -77,20 +77,20 @@ auto gate::apply(uint64_t row) const -> uint64_t {
 }
 
 auto gate::apply(state &s) const -> void {
-  assert(s.get_bits_num() == get_size());
-  s.set_value(apply(s.get_value()));
+  assert(s.bits_num() == bits_num());
+  s.set_value(apply(s.value()));
 }
 
 auto gate::apply_back(truth_table &tt) const -> void {
-  assert(tt.get_bits_num() == get_size());
-  for (auto index = 0UL; index < tt.get_size(); index++) {
-    tt.set_row(index, apply(tt.get_row(index)));
+  assert(tt.bits_num() == bits_num());
+  for (auto index = 0UL; index < tt.size(); index++) {
+    tt.set_row(index, apply(tt.row(index)));
   }
 }
 
 auto gate::apply_front(truth_table &tt) const -> void {
-  assert(tt.get_bits_num() == get_size());
-  for (auto index = 0UL; index < tt.get_size(); index++) {
+  assert(tt.bits_num() == bits_num());
+  for (auto index = 0UL; index < tt.size(); index++) {
     bool is_control_set = (index & control_mask_) == control_mask_;
     bool is_target_set = (index & target_mask_) == target_mask_;
     if (is_control_set && is_target_set) {
@@ -101,7 +101,7 @@ auto gate::apply_front(truth_table &tt) const -> void {
 }
 
 auto gate::print() const -> void {
-  std::cout << "Size:     " << size_ << std::endl;
+  std::cout << "Size:     " << bits_num_ << std::endl;
   std::cout << "Target:   " << target_ << std::endl;
   std::cout << "Controls: " << std::endl;
   for (auto c : controls_) {

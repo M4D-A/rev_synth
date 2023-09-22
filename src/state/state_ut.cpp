@@ -18,12 +18,12 @@ TEST_CASE("state constructors and getters", "[state], [ctors], [getters]") {
   SECTION("default value") {
     auto tested = state(bits);
 
-    REQUIRE(tested.get_bits_num() == bits);
-    REQUIRE(tested.get_bits_mask() == mask64 >> (64 - bits));
-    REQUIRE(tested.get_value() == 0UL);
+    REQUIRE(tested.bits_num() == bits);
+    REQUIRE(tested.bits_mask() == mask64 >> (64 - bits));
+    REQUIRE(tested.value() == 0UL);
     REQUIRE(tested == 0UL);
     for (auto i = 0UL; i < 64UL; i++) {
-      REQUIRE(tested.get_bit(i) == 0UL);
+      REQUIRE(tested.bit_value(i) == 0UL);
       REQUIRE(tested[i] == 0UL);
     }
   }
@@ -33,17 +33,17 @@ TEST_CASE("state constructors and getters", "[state], [ctors], [getters]") {
     const auto value = mrnd() & max_value_mask;
     auto tested = state(bits, value);
 
-    REQUIRE(tested.get_bits_num() == bits);
-    REQUIRE(tested.get_bits_mask() == mask64 >> (64 - bits));
-    REQUIRE(tested.get_value() == value);
+    REQUIRE(tested.bits_num() == bits);
+    REQUIRE(tested.bits_mask() == mask64 >> (64 - bits));
+    REQUIRE(tested.value() == value);
     REQUIRE(tested == value);
-    for (auto i = 0UL; i < tested.get_bits_num(); i++) {
+    for (auto i = 0UL; i < tested.bits_num(); i++) {
       auto rhs = (value >> i) & 1;
-      REQUIRE(tested.get_bit(i) == rhs);
+      REQUIRE(tested.bit_value(i) == rhs);
       REQUIRE(tested[i] == rhs);
     }
-    for (auto i = tested.get_bits_num(); i < 64; i++) {
-      REQUIRE(tested.get_bit(i) == 0UL);
+    for (auto i = tested.bits_num(); i < 64; i++) {
+      REQUIRE(tested.bit_value(i) == 0UL);
       REQUIRE(tested[i] == 0UL);
     }
   }
@@ -59,14 +59,14 @@ TEST_CASE("state value setters", "[state], [setters]") {
   const auto new_value = mrnd() & max_value_mask;
   auto tested = state(bits, init_value).set_value(chained_value);
 
-  REQUIRE(tested.get_value() == chained_value);
+  REQUIRE(tested.value() == chained_value);
   REQUIRE(tested == chained_value);
 
   tested.set_value(new_value);
 
-  REQUIRE(tested.get_bits_num() == bits);
-  REQUIRE(tested.get_bits_mask() == max_value_mask);
-  REQUIRE(tested.get_value() == new_value);
+  REQUIRE(tested.bits_num() == bits);
+  REQUIRE(tested.bits_mask() == max_value_mask);
+  REQUIRE(tested.value() == new_value);
   REQUIRE(tested == new_value);
 }
 
@@ -80,16 +80,16 @@ TEST_CASE("state bit setters", "[state], [setters]") {
   const auto new_bit_index = mrnd() % bits;
   auto tested = state(bits, value).set_bit(new_bit_index, new_bit);
 
-  REQUIRE(tested.get_bits_num() == bits);
-  REQUIRE(tested.get_bits_mask() == max_value_mask);
-  for (auto i = 0UL; i < tested.get_bits_num(); i++) {
+  REQUIRE(tested.bits_num() == bits);
+  REQUIRE(tested.bits_mask() == max_value_mask);
+  for (auto i = 0UL; i < tested.bits_num(); i++) {
     auto rhs = (value >> i) & 1;
     if (i == new_bit_index) {
       rhs = new_bit;
     }
     REQUIRE(tested[i] == rhs);
   }
-  for (auto i = tested.get_bits_num(); i < 64; i++) {
+  for (auto i = tested.bits_num(); i < 64; i++) {
     REQUIRE(tested[i] == 0);
   }
 }
@@ -103,16 +103,16 @@ TEST_CASE("state bit switch", "[state], [modifiers]") {
   const auto new_bit_index = mrnd() % bits;
   auto tested = state(bits, value).switch_bit(new_bit_index);
 
-  REQUIRE(tested.get_bits_num() == bits);
-  REQUIRE(tested.get_bits_mask() == max_value_mask);
-  for (auto i = 0UL; i < tested.get_bits_num(); i++) {
+  REQUIRE(tested.bits_num() == bits);
+  REQUIRE(tested.bits_mask() == max_value_mask);
+  for (auto i = 0UL; i < tested.bits_num(); i++) {
     auto rhs = (value >> i) & 1;
     if (i == new_bit_index) {
       rhs = (~rhs) & 1;
     }
     REQUIRE(tested[i] == rhs);
   }
-  for (auto i = tested.get_bits_num(); i < 64; i++) {
+  for (auto i = tested.bits_num(); i < 64; i++) {
     REQUIRE(tested[i] == 0);
   }
 }
@@ -125,14 +125,14 @@ TEST_CASE("state negate", "[state], [modifiers]") {
   const auto value = mrnd() & max_value_mask;
   auto tested = state(bits, value).negate();
 
-  REQUIRE(tested.get_bits_num() == bits);
-  REQUIRE(tested.get_bits_mask() == max_value_mask);
-  for (auto i = 0UL; i < tested.get_bits_num(); i++) {
+  REQUIRE(tested.bits_num() == bits);
+  REQUIRE(tested.bits_mask() == max_value_mask);
+  for (auto i = 0UL; i < tested.bits_num(); i++) {
     auto rhs = (~value >> i) & 1;
     REQUIRE(tested[i] == rhs);
   }
 
-  for (auto i = tested.get_bits_num(); i < 64; i++) {
+  for (auto i = tested.bits_num(); i < 64; i++) {
     REQUIRE(tested[i] == 0);
   }
 }
