@@ -26,6 +26,11 @@ TEST_CASE("state constructors and getters", "[state], [ctors], [getters]") {
       REQUIRE(tested.bit_value(i) == 0UL);
       REQUIRE(tested[i] == 0UL);
     }
+    auto zeroes = std::vector<uint64_t>(bits);
+    std::iota(zeroes.begin(), zeroes.end(), 0);
+    auto ones = std::vector<uint64_t>();
+    REQUIRE(tested.zeroes() == zeroes);
+    REQUIRE(tested.ones() == ones);
   }
 
   SECTION("assigned value") {
@@ -45,6 +50,14 @@ TEST_CASE("state constructors and getters", "[state], [ctors], [getters]") {
     for (auto i = tested.bits_num(); i < 64; i++) {
       REQUIRE(tested.bit_value(i) == 0UL);
       REQUIRE(tested[i] == 0UL);
+    }
+    auto zeroes = tested.zeroes();
+    auto ones = tested.ones();
+    for (auto zero : zeroes) {
+      REQUIRE(tested.bit_value(zero) == 0);
+    }
+    for (auto one : ones) {
+      REQUIRE(tested.bit_value(one) == 1);
     }
   }
 }

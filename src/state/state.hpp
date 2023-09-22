@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <iostream>
+#include <vector>
 
 class state {
   const uint64_t bits_num_;
@@ -14,6 +15,8 @@ public:
   auto bits_mask() const -> uint64_t;
   auto value() const -> uint64_t;
   auto bit_value(uint64_t index) const -> uint64_t;
+  auto zeroes() const -> std::vector<uint64_t>;
+  auto ones() const -> std::vector<uint64_t>;
 
   auto set_value(uint64_t value) -> state &;
   auto set_bit(uint64_t index, uint64_t bit_value) -> state &;

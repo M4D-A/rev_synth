@@ -1,6 +1,7 @@
 #include "state.hpp"
 #include "iostream"
 #include <cassert>
+#include <cstdint>
 #include <limits>
 
 const auto mask64 = std::numeric_limits<uint64_t>::max();
@@ -19,6 +20,26 @@ auto state::value() const -> uint64_t { return value_; }
 
 auto state::bit_value(uint64_t index) const -> uint64_t {
   return (value_ >> index) & 1UL;
+}
+
+auto state::zeroes() const -> std::vector<uint64_t> {
+  auto retval = std::vector<uint64_t>();
+  for (auto i = 0UL; i < bits_num_; i++) {
+    if (bit_value(i) == 0) {
+      retval.push_back(i);
+    }
+  }
+  return retval;
+}
+
+auto state::ones() const -> std::vector<uint64_t> {
+  auto retval = std::vector<uint64_t>();
+  for (auto i = 0UL; i < bits_num_; i++) {
+    if (bit_value(i) == 1) {
+      retval.push_back(i);
+    }
+  }
+  return retval;
 }
 
 auto state::set_value(uint64_t value) -> state & {
