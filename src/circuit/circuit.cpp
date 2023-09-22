@@ -3,8 +3,8 @@
 circuit::circuit(uint64_t bits_num)
     : output_tt_(truth_table(bits_num)), bits_num_(bits_num){};
 
-circuit::circuit(uint64_t width, uint64_t gates_num, std::mt19937_64 mrnd)
-    : output_tt_(truth_table(width)), bits_num_(width) {
+circuit::circuit(uint64_t bits_num, uint64_t gates_num, std::mt19937_64 mrnd)
+    : output_tt_(truth_table(bits_num)), bits_num_(bits_num) {
   for (auto i = 0UL; i < gates_num; i++) {
     push_back(gate(bits_num_, mrnd));
   }
