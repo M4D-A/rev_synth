@@ -4,8 +4,8 @@
 #include <vector>
 
 class state {
-  const uint64_t bits_num_;
-  const uint64_t bits_mask_;
+  uint64_t bits_num_;
+  uint64_t bits_mask_;
   uint64_t value_;
 
 public:

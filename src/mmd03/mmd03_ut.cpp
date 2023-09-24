@@ -5,8 +5,8 @@
 #include <ranges>
 
 namespace mmd03_ut {
-const auto EPOCHS = 1;
-const auto max_bits = 8;
+const auto EPOCHS = 100;
+const auto max_bits = 12;
 std::mt19937_64 mrnd;
 } // namespace mmd03_ut
 
@@ -18,9 +18,7 @@ TEST_CASE("mmd03", "[mmd03]") {
 
   auto target_tt = truth_table(bits);
   target_tt.shuffle(mrnd);
-
-  target_tt.print();
   auto tested = mmd03();
   auto synth = tested.synthesize(target_tt);
-  synth.print();
+  REQUIRE(synth.output_tt() == target_tt);
 }

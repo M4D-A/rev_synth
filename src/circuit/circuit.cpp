@@ -84,3 +84,27 @@ auto circuit::print() -> void {
     (*this)[i].print();
   }
 }
+
+auto circuit::graph() -> void {
+  for (auto i = 0UL; i < bits_num(); i++) {
+    std::cout << i << ": ";
+    for (auto j = 0UL; j < gates_num(); j++) {
+      auto current_gate = (*this)[j];
+      auto controls = current_gate.controls();
+      auto target = current_gate.target();
+      auto is_control =
+          std::find(controls.begin(), controls.end(), i) != controls.end();
+      auto is_target = i == target;
+      if (is_control) {
+        std::cout << "O";
+      }
+      else if (is_target) {
+        std::cout << "X";
+      }
+      else {
+        std::cout << "-";
+      }
+    }
+    std::cout << std::endl;
+  }
+}

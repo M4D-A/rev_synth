@@ -37,4 +37,5 @@ public:
   friend auto operator+(circuit lhs, const T &rhs) -> circuit;
 
   auto print() -> void;
+  auto graph() -> void;
 };
