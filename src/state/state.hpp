@@ -26,7 +26,12 @@ public:
   auto operator==(const state &rhs) const -> bool = default;
   auto operator==(const uint64_t &rhs) const -> bool;
 
+  auto operator^(const state &rhs) const -> state;
+  auto operator&(const state &rhs) const -> state;
+  auto operator|(const state &rhs) const -> state;
+
   auto operator[](const uint64_t index) const -> uint64_t;
+
   operator uint64_t() const;
 
   auto print() const -> void;

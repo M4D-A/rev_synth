@@ -61,8 +61,8 @@ auto truth_table::operator[](uint64_t index) -> uint64_t & {
   return data_[index];
 }
 
-auto truth_table::operator[](uint64_t index) const -> state {
-  return state{bits_num(), data_[index]};
+auto truth_table::operator[](uint64_t index) const -> uint64_t {
+  return data_[index];
 }
 
 auto truth_table::operator+(const truth_table &rhs) const -> truth_table {

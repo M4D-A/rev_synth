@@ -77,6 +77,24 @@ auto state::operator[](const uint64_t index) const -> uint64_t {
   return bit_value(index);
 }
 
+auto state::operator^(const state &rhs) const -> state {
+  assert(bits_num() == rhs.bits_num());
+  auto new_value = value() ^ rhs.value();
+  return state(bits_num(), new_value);
+}
+
+auto state::operator&(const state &rhs) const -> state {
+  assert(bits_num() == rhs.bits_num());
+  auto new_value = value() & rhs.value();
+  return state(bits_num(), new_value);
+}
+
+auto state::operator|(const state &rhs) const -> state {
+  assert(bits_num() == rhs.bits_num());
+  auto new_value = value() | rhs.value();
+  return state(bits_num(), new_value);
+}
+
 state::operator uint64_t() const { return value(); }
 
 auto state::print() const -> void {
