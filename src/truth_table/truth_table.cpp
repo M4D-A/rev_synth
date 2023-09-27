@@ -53,12 +53,16 @@ auto truth_table::inverse() -> truth_table & {
   return *this;
 }
 
+auto truth_table::next_permutation() -> bool {
+  return std::next_permutation(data_.begin(), data_.end());
+}
+
 auto truth_table::operator[](uint64_t index) -> uint64_t & {
   return data_[index];
 }
 
-auto truth_table::operator[](uint64_t index) const -> uint64_t {
-  return data_[index];
+auto truth_table::operator[](uint64_t index) const -> state {
+  return state{bits_num(), data_[index]};
 }
 
 auto truth_table::operator+(const truth_table &rhs) const -> truth_table {

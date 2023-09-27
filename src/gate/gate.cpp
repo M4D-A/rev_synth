@@ -61,6 +61,8 @@ auto gate::bits_num() const -> uint64_t { return bits_num_; }
 
 auto gate::controls() const -> std::vector<uint64_t> { return controls_; }
 
+auto gate::controls_num() const -> uint64_t { return controls_.size(); }
+
 auto gate::target() const -> uint64_t { return target_; }
 
 auto gate::control_mask() const -> uint64_t { return control_mask_; }

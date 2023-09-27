@@ -15,8 +15,9 @@ public:
   circuit(uint64_t bits_num, uint64_t gates_num, std::mt19937_64);
 
   auto bits_num() const -> uint64_t;
-  auto gates_num() const -> uint64_t;
   auto gates() const -> const std::deque<gate> &;
+  auto gates_num() const -> uint64_t;
+  auto controls_num() const -> uint64_t;
   auto output_tt() const -> const truth_table &;
 
   auto apply(uint64_t row) const -> uint64_t;

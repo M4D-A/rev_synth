@@ -77,6 +77,8 @@ auto state::operator[](const uint64_t index) const -> uint64_t {
   return bit_value(index);
 }
 
+state::operator uint64_t() const { return value(); }
+
 auto state::print() const -> void {
   for (auto i = bits_num_; i > 0UL; i--) {
     auto bit = (value_ >> (i - 1UL)) & 1UL;

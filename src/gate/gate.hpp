@@ -18,6 +18,7 @@ public:
 
   auto bits_num() const -> uint64_t;
   auto controls() const -> std::vector<uint64_t>;
+  auto controls_num() const -> uint64_t;
   auto target() const -> uint64_t;
   auto control_mask() const -> uint64_t;
   auto target_mask() const -> uint64_t;

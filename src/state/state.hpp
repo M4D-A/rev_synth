@@ -9,7 +9,7 @@ class state {
   uint64_t value_;
 
 public:
-  state(uint64_t bits_num, uint64_t value = 0UL);
+  state(uint64_t bits_num, uint64_t value);
 
   auto bits_num() const -> uint64_t;
   auto bits_mask() const -> uint64_t;
@@ -27,6 +27,7 @@ public:
   auto operator==(const uint64_t &rhs) const -> bool;
 
   auto operator[](const uint64_t index) const -> uint64_t;
+  operator uint64_t() const;
 
   auto print() const -> void;
 };

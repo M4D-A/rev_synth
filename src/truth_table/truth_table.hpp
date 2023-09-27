@@ -26,9 +26,10 @@ public:
   auto inverse() -> truth_table &;
   auto shuffle(std::mt19937_64 &mrnd) -> truth_table &;
   auto swap(uint64_t index_1, uint64_t index_2) -> truth_table &;
+  auto next_permutation() -> bool;
 
   auto operator[](uint64_t index) -> uint64_t &;
-  auto operator[](uint64_t index) const -> uint64_t;
+  auto operator[](uint64_t index) const -> state;
 
   auto operator==(const truth_table &rhs) const -> bool = default;
   auto operator+(const truth_table &rhs) const -> truth_table;

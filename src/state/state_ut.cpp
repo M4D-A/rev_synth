@@ -15,24 +15,6 @@ TEST_CASE("state constructors and getters", "[state], [ctors], [getters]") {
   const auto bits =
       static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, 64))));
 
-  SECTION("default value") {
-    auto tested = state(bits);
-
-    REQUIRE(tested.bits_num() == bits);
-    REQUIRE(tested.bits_mask() == mask64 >> (64 - bits));
-    REQUIRE(tested.value() == 0UL);
-    REQUIRE(tested == 0UL);
-    for (auto i = 0UL; i < 64UL; i++) {
-      REQUIRE(tested.bit_value(i) == 0UL);
-      REQUIRE(tested[i] == 0UL);
-    }
-    auto zeroes = std::vector<uint64_t>(bits);
-    std::iota(zeroes.begin(), zeroes.end(), 0);
-    auto ones = std::vector<uint64_t>();
-    REQUIRE(tested.zeroes() == zeroes);
-    REQUIRE(tested.ones() == ones);
-  }
-
   SECTION("assigned value") {
     const auto max_value_mask = mask64 >> (64 - bits);
     const auto value = mrnd() & max_value_mask;

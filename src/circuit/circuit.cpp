@@ -16,6 +16,13 @@ auto circuit::gates_num() const -> uint64_t { return gates_.size(); }
 
 auto circuit::gates() const -> const std::deque<gate> & { return gates_; }
 
+auto circuit::controls_num() const -> uint64_t {
+  auto acc_lambda = [](auto sum, auto gate) {
+    return sum + gate.controls_num();
+  };
+  return std::accumulate(gates_.begin(), gates_.end(), 0UL, acc_lambda);
+}
+
 auto circuit::output_tt() const -> const truth_table & { return output_tt_; }
 
 auto circuit::apply(uint64_t row) const -> uint64_t { return output_tt_[row]; }
