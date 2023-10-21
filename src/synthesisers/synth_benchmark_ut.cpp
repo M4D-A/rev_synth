@@ -71,23 +71,29 @@ auto benchmark_sample(const synthesiser &tested,
 using namespace synth_benchmark_ut;
 
 TEST_CASE("Full 3 bit benchmark", "[benchmark]") {
+  std::cout << "Full 3 bit BM" << std::endl;
   SECTION("base mmd03") {
+    std::cout << " Base MMD03" << std::endl;
     auto tested = mmd03();
     auto [gc, cl] = benchmark_full_3bit(tested);
-    std::cout << "Average GC: " << gc << std::endl;
-    std::cout << "Average CL: " << cl << std::endl;
+    std::cout << "  Average GC: " << gc << std::endl;
+    std::cout << "  Average CL: " << cl << std::endl;
   }
+  std::cout << std::endl;
 }
 
 TEST_CASE("Sample 4 bit benchmark", "[benchmark], [sample], [4bit]") {
+  std::cout << "Sample 4 bit BM: " << std::endl;
   auto sample = std::vector<truth_table>(100, truth_table(4));
   std::for_each(sample.begin(), sample.end(),
                 [](truth_table &tt) { tt.shuffle(mrnd); });
 
   SECTION("base mmd03") {
+    std::cout << " Base MMD03" << std::endl;
     auto tested = mmd03();
     auto [gc, cl] = benchmark_sample(tested, sample);
-    std::cout << "Average GC: " << gc << std::endl;
-    std::cout << "Average CL: " << cl << std::endl;
+    std::cout << "  Average GC: " << gc << std::endl;
+    std::cout << "  Average CL: " << cl << std::endl;
   }
+  std::cout << std::endl;
 }
