@@ -10,15 +10,15 @@ using namespace state_ut;
 
 TEST_CASE("state constructors and getters", "[state], [ctors], [getters]") {
   std::mt19937_64 mrnd;
-  const auto bits = static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1UL, state::MAX_SIZE))));
+  const auto size = static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1UL, state::MAX_SIZE))));
 
   SECTION("assigned value") {
-    const auto max_value_mask = state::MAX_MASK >> (64 - bits);
-    const auto value = mrnd() & max_value_mask;
-    auto tested = state(bits, value);
+    const auto mask = state::mask(size);
+    const auto value = mrnd() & mask;
+    auto tested = state(size, value);
 
-    REQUIRE(tested.size() == bits);
-    REQUIRE(tested.mask() == state::MAX_MASK >> (64 - bits));
+    REQUIRE(tested.size() == size);
+    REQUIRE(tested.mask() == state::mask(size));
     REQUIRE(tested.value() == value);
     REQUIRE(tested == value);
     for (auto i = 0UL; i < tested.size(); i++) {
@@ -43,37 +43,37 @@ TEST_CASE("state constructors and getters", "[state], [ctors], [getters]") {
 
 TEST_CASE("state value setters", "[state], [setters]") {
   std::mt19937_64 mrnd;
-  const auto bits = static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1UL, state::MAX_SIZE))));
+  const auto size = static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1UL, state::MAX_SIZE))));
 
-  const auto max_value_mask = state::MAX_MASK >> (state::MAX_SIZE - bits);
-  const auto init_value = mrnd() & max_value_mask;
-  const auto chained_value = mrnd() & max_value_mask;
-  const auto new_value = mrnd() & max_value_mask;
-  auto tested = state(bits, init_value).set_value(chained_value);
+  const auto mask = state::mask(size);
+  const auto init_value = mrnd() & mask;
+  const auto chained_value = mrnd() & mask;
+  const auto new_value = mrnd() & mask;
+  auto tested = state(size, init_value).set_value(chained_value);
 
   REQUIRE(tested.value() == chained_value);
   REQUIRE(tested == chained_value);
 
   tested.set_value(new_value);
 
-  REQUIRE(tested.size() == bits);
-  REQUIRE(tested.mask() == max_value_mask);
+  REQUIRE(tested.size() == size);
+  REQUIRE(tested.mask() == mask);
   REQUIRE(tested.value() == new_value);
   REQUIRE(tested == new_value);
 }
 
 TEST_CASE("state bit setters", "[state], [setters]") {
   std::mt19937_64 mrnd;
-  const auto bits = static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1UL, state::MAX_SIZE))));
+  const auto size = static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1UL, state::MAX_SIZE))));
 
-  const auto max_value_mask = state::MAX_MASK >> (state::MAX_SIZE - bits);
-  const auto value = mrnd() & max_value_mask;
+  const auto mask = state::mask(size);
+  const auto value = mrnd() & mask;
   const auto new_bit = mrnd() % 2;
-  const auto new_bit_index = mrnd() % bits;
-  auto tested = state(bits, value).set_bit(new_bit_index, new_bit);
+  const auto new_bit_index = mrnd() % size;
+  auto tested = state(size, value).set_bit(new_bit_index, new_bit);
 
-  REQUIRE(tested.size() == bits);
-  REQUIRE(tested.mask() == max_value_mask);
+  REQUIRE(tested.size() == size);
+  REQUIRE(tested.mask() == mask);
   for (auto i = 0UL; i < tested.size(); i++) {
     auto rhs = (value >> i) & 1UL;
     if (i == new_bit_index) {
@@ -88,15 +88,15 @@ TEST_CASE("state bit setters", "[state], [setters]") {
 
 TEST_CASE("state bit switch", "[state], [modifiers]") {
   std::mt19937_64 mrnd;
-  const auto bits = static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1UL, state::MAX_SIZE))));
+  const auto size = static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1UL, state::MAX_SIZE))));
 
-  const auto max_value_mask = state::MAX_MASK >> (64 - bits);
-  const auto value = mrnd() & max_value_mask;
-  const auto new_bit_index = mrnd() % bits;
-  auto tested = state(bits, value).switch_bit(new_bit_index);
+  const auto mask = state::mask(size);
+  const auto value = mrnd() & mask;
+  const auto new_bit_index = mrnd() % size;
+  auto tested = state(size, value).switch_bit(new_bit_index);
 
-  REQUIRE(tested.size() == bits);
-  REQUIRE(tested.mask() == max_value_mask);
+  REQUIRE(tested.size() == size);
+  REQUIRE(tested.mask() == mask);
   for (auto i = 0UL; i < tested.size(); i++) {
     auto rhs = (value >> i) & 1UL;
     if (i == new_bit_index) {
@@ -111,14 +111,14 @@ TEST_CASE("state bit switch", "[state], [modifiers]") {
 
 TEST_CASE("state negate", "[state], [modifiers]") {
   std::mt19937_64 mrnd;
-  const auto bits = static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1UL, state::MAX_SIZE))));
+  const auto size = static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1UL, state::MAX_SIZE))));
 
-  const auto max_value_mask = state::MAX_MASK >> (64 - bits);
-  const auto value = mrnd() & max_value_mask;
-  auto tested = state(bits, value).negate();
+  const auto mask = state::mask(size);
+  const auto value = mrnd() & mask;
+  auto tested = state(size, value).negate();
 
-  REQUIRE(tested.size() == bits);
-  REQUIRE(tested.mask() == max_value_mask);
+  REQUIRE(tested.size() == size);
+  REQUIRE(tested.mask() == mask);
   for (auto i = 0UL; i < tested.size(); i++) {
     auto rhs = (~value >> i) & 1UL;
     REQUIRE(tested[i] == rhs);
