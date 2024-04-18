@@ -1,29 +1,32 @@
 #pragma once
 #include "state/state.hpp"
 #include "truth_table/truth_table.hpp"
-#include <cassert>
 #include <cstdint>
 #include <vector>
 
 class gate {
-  uint64_t bits_num_;
-  std::vector<uint64_t> controls_;
-  uint64_t target_;
-  uint64_t control_mask_;
-  uint64_t target_mask_;
+  uint64_t _size;
+  std::vector<uint64_t> _controls;
+  uint64_t _target;
+  uint64_t _control_mask;
+  uint64_t _target_mask;
 
 public:
-  gate(uint64_t bits_num, std::vector<uint64_t> controls, uint64_t target);
-  gate(uint64_t bits_num, std::mt19937_64 mrnd);
+  static auto sort_controls(std::vector<uint64_t> &controls);
+  static auto control_mask(const std::vector<uint64_t> &contrsols);
+  static auto target_mask(uint64_t target);
 
-  auto bits_num() const -> uint64_t;
-  auto controls() const -> std::vector<uint64_t>;
-  auto controls_num() const -> uint64_t;
-  auto target() const -> uint64_t;
-  auto control_mask() const -> uint64_t;
-  auto target_mask() const -> uint64_t;
+  gate(uint64_t size, std::vector<uint64_t> controls, uint64_t target);
+  gate(uint64_t size, std::mt19937_64 mrnd);
 
-  auto apply(uint64_t row) const -> uint64_t;
+  [[nodiscard]] auto size() const noexcept -> uint64_t;
+  [[nodiscard]] auto controls() const noexcept -> std::vector<uint64_t>;
+  [[nodiscard]] auto controls_num() const noexcept -> uint64_t;
+  [[nodiscard]] auto target() const noexcept -> uint64_t;
+  [[nodiscard]] auto control_mask() const noexcept -> uint64_t;
+  [[nodiscard]] auto target_mask() const noexcept -> uint64_t;
+
+  [[nodiscard]] auto apply(uint64_t row) const noexcept -> uint64_t;
   auto apply(state &s) const -> void;
   auto apply_back(truth_table &tt) const -> void;
   auto apply_front(truth_table &tt) const -> void;

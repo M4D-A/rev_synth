@@ -1,4 +1,5 @@
 #include "gate.hpp"
+#include "utils/utils.hpp"
 #include <bits/fs_fwd.h>
 #include <catch2/catch_all.hpp>
 #include <catch2/catch_message.hpp>
@@ -7,59 +8,42 @@
 
 namespace gate_ut {
 const auto EPOCHS = 10000;
-const auto max_bits = 12;
-std::mt19937_64 mrnd;
-const uint64_t mask64 = std::numeric_limits<uint64_t>::max();
+const auto max_size = 12;
 
-std::vector<uint64_t> random_unique_vector(uint64_t vector_size,
-                                           uint64_t range_upper) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-
-  std::vector<uint64_t> numbers(range_upper);
-  std::iota(numbers.begin(), numbers.end(), 0);
-
-  std::shuffle(numbers.begin(), numbers.end(), gen); // Shuffle the numbers
-
-  std::vector<uint64_t> result(vector_size);
-  std::copy(numbers.begin(),
-            numbers.begin() + static_cast<ptrdiff_t>(vector_size),
-            result.begin()); // Copy the first k numbers
-
-  return result;
-}
 } // namespace gate_ut
 
 using namespace gate_ut;
 
 TEST_CASE("gate constructors and getters", "[gate], [ctors], [getters]") {
-  const auto bits =
-      static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, max_bits))));
+  std::mt19937_64 mrnd;
+  const auto size = static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, max_size))));
 
-  const auto controls_num = mrnd() % bits + 1;
-  auto controls = random_unique_vector(controls_num, bits);
-  const auto target = controls.back();
+  auto taps_num = mrnd() % size + 1;
+  auto controls = random_unique_vector(taps_num, size, mrnd);
+  auto target = controls.back();
   controls.pop_back();
-  const auto tested = gate(bits, controls, target);
   std::shuffle(controls.begin(), controls.end(), mrnd);
-  const auto tested_2 = gate(bits, controls, target);
+
+  auto tested_1 = gate(size, controls, target);
+  REQUIRE(tested_1.size() == size);
+
   std::sort(controls.begin(), controls.end());
+  REQUIRE(tested_1.controls() == controls);
 
-  REQUIRE(tested.bits_num() == bits);
-  REQUIRE(tested.controls() == controls);
-  REQUIRE(tested == tested_2);
+  std::shuffle(controls.begin(), controls.end(), mrnd);
+  auto tested_2 = gate(size, controls, target);
+  REQUIRE(tested_1 == tested_2);
 
-  const auto control_mask = tested.control_mask();
-  for (auto i = 0UL; i < 64UL; i++) {
+  auto control_mask = tested_1.control_mask();
+  for (auto i = 0UL; i < max_size; i++) {
     const auto is_control_in_vector =
         std::find(controls.begin(), controls.end(), i) != controls.end();
-    const auto is_control_bit_set =
-        static_cast<bool>((control_mask >> i) & 1UL);
+    const auto is_control_bit_set = static_cast<bool>((control_mask >> i) & 1UL);
     REQUIRE(is_control_bit_set == is_control_in_vector);
   }
 
-  const auto target_mask = tested.target_mask();
-  for (auto i = 0UL; i < 64UL; i++) {
+  auto target_mask = tested_1.target_mask();
+  for (auto i = 0UL; i < max_size; i++) {
     const auto is_target_bit_set = static_cast<bool>((target_mask >> i) & 1UL);
     const auto is_target_bit = i == target;
     REQUIRE(is_target_bit_set == is_target_bit);
@@ -67,21 +51,20 @@ TEST_CASE("gate constructors and getters", "[gate], [ctors], [getters]") {
 }
 
 TEST_CASE("gate apply", "[gate], [apply]") {
-  const auto bits =
-      static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, max_bits))));
+  std::mt19937_64 mrnd;
+  const auto size = static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, max_size))));
 
-  const auto tested = gate(bits, mrnd);
-  const auto controls = tested.controls();
-  const auto target = tested.target();
+  auto tested = gate(size, mrnd);
+  auto controls = tested.controls();
+  auto target = tested.target();
 
   SECTION("row") {
-    const auto row = mrnd() & (mask64 >> (64 - bits));
-    const auto new_row = tested.apply(row);
-    const auto new_new_row = tested.apply(new_row);
+    auto row = mrnd() & state::mask(size);
+    auto new_row = tested.apply(row);
+    auto new_new_row = tested.apply(new_row);
     REQUIRE(new_new_row == row);
-    const bool is_control_set =
-        std::all_of(controls.begin(), controls.end(),
-                    [row](auto i) { return (row >> i) & 1; });
+    bool is_control_set =
+        std::all_of(controls.begin(), controls.end(), [row](auto i) { return (row >> i) & 1UL; });
     if (is_control_set) {
       REQUIRE((row ^ new_row) == 1UL << target);
     }
@@ -91,26 +74,30 @@ TEST_CASE("gate apply", "[gate], [apply]") {
   }
 
   SECTION("state") {
-    const auto value = mrnd() & (mask64 >> (64 - bits));
-    auto target_state = state(bits, value);
-    tested.apply(target_state);
-    const auto new_value = target_state.value();
-    REQUIRE(new_value == tested.apply(value));
+    auto test_state = state(size, mrnd);
+    auto target_value = tested.apply(test_state.value());
+
+    INFO(size);
+    INFO(test_state.value());
+    INFO(target_value);
+
+    tested.apply(test_state);
+    REQUIRE(test_state == target_value);
   }
 
   SECTION("truth table") {
-    auto target_tt = truth_table(bits);
-    tested.apply_back(target_tt);
-    for (auto input = 0UL; input < target_tt.size(); input++) {
-      const auto output = target_tt[input];
-      REQUIRE(output == tested.apply(input));
+    auto test_tt = truth_table(size);
+    tested.apply_back(test_tt);
+
+    for (auto input = 0UL; auto row : test_tt) {
+      REQUIRE(row == tested.apply(input++));
     }
   }
 
   SECTION("truth table on input") {
-    auto target_tt = truth_table(bits);
+    auto target_tt = truth_table(size);
     tested.apply_front(target_tt);
-    for (auto input = 0UL; input < target_tt.size(); input++) {
+    for (auto input = 0UL; input < target_tt.length(); input++) {
       const auto output = target_tt[input];
       REQUIRE(output == tested.apply(input));
     }
@@ -119,8 +106,8 @@ TEST_CASE("gate apply", "[gate], [apply]") {
 
 TEST_CASE("complex gate apply", "[gate], [apply]") {
 
-  const auto bits =
-      static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, max_bits))));
+  std::mt19937_64 mrnd;
+  const auto bits = static_cast<uint64_t>(GENERATE(take(EPOCHS, random(1, max_size))));
 
   SECTION("two gates") {
     std::vector<gate> tested_gates;

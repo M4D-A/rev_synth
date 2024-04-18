@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <limits>
+#include <random>
 #include <vector>
 
 class state {
@@ -17,6 +18,7 @@ public:
   auto check_value(uint64_t value) noexcept(false) -> uint64_t;
 
   state(uint64_t size, uint64_t value);
+  state(uint64_t size, std::mt19937_64 mrnd);
 
   [[nodiscard]] auto size() const noexcept -> uint64_t;
   [[nodiscard]] auto mask() const noexcept -> uint64_t;

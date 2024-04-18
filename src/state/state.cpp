@@ -2,6 +2,7 @@
 #include "iostream"
 #include <cassert>
 #include <cstdint>
+#include <random>
 #include <stdexcept>
 #include <strings.h>
 
@@ -29,6 +30,9 @@ auto state::check_value(uint64_t value) noexcept(false) -> uint64_t {
 
 state::state(uint64_t size, uint64_t value)
     : _size(check_size(size)), _mask(mask(size)), _value(check_value(value)) {}
+
+state::state(uint64_t size, std::mt19937_64 mrnd)
+    : _size(check_size(size)), _mask(mask(size)), _value(mrnd() & _mask) {}
 
 auto state::size() const noexcept -> uint64_t { return _size; }
 
