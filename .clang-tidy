@@ -1,0 +1,4 @@
+Checks: "modernize*, clang-analyzer*, hicpp*, cppcoreguidelines*"
+WarningsAsErrors: "*"
+HeaderFilterRegex: ""
+FormatStyle: none
